@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <project name="projog" default="release-website">
-	<property name="version" value="0.1.0-SNAPSHOT" />
+	<property name="version" value="0.3.0-SNAPSHOT" />
 	<property name="release-dir" value="projog-${version}"/>
 	<property name="javac-target" value="1.8"/>
 	<property name="maven-url" value="http://search.maven.org/remotecontent?filepath="/>
@@ -14,7 +14,7 @@
 	<property name="hamcrest-url" value="${maven-url}org/hamcrest/hamcrest-core/${hamcrest-version}/hamcrest-core-${hamcrest-version}.jar"/>
 
 	<property name="projog-core-dir" value="../projog"/>
-	<property name="projog-core-jar" value="${projog-core-dir}/target/projog-core-0.1.0-SNAPSHOT.jar"/>
+	<property name="projog-core-jar" value="${projog-core-dir}/target/projog-core-0.3.0-SNAPSHOT.jar"/>
 	<property name="projog-test-jar" value="lib/projog-test-0.2.0.jar"/>
 	<property name="projog-test-url" value="${maven-url}org/projog/projog-test/0.2.0/projog-test-0.2.0.jar"/>
 
@@ -97,7 +97,7 @@
 			</fileset>
 		</copy>
 		<copy todir="build/docs/javadoc">
-         <fileset dir="${projog-core-dir}/target/site/apidocs"/>
+         <fileset dir="${projog-core-dir}/target/apidocs"/>
 		</copy>
 		<java classname="org.projog.website.HtmlGenerator" failonerror="true" fork="true">
 			<arg value="${version}"/>

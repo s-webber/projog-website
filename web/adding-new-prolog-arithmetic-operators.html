@@ -1,5 +1,5 @@
 <p>
-Projog provides a mechanism for "plugging in" or "injecting" implementations of <a href="javadoc/org/projog/core/Calculatable.html" title="interface in org.projog.core"><code>Calculatable</code></a> at runtime.
+Projog provides a mechanism for "plugging in" or "injecting" implementations of <a href="javadoc/org/projog/core/ArithmeticOperator.html" title="interface in org.projog.core"><code>ArithmeticOperator</code></a> at runtime.
 This mechanism provides an easy way to configure and extend the arithmetic operations supported by Projog.
 </p>
 
@@ -18,18 +18,18 @@ If your project is configured using Maven then you can add a dependency on Projo
 
 <p>
 Contents of
-<a href="https://github.com/s-webber/projog-examples/blob/master/calling-java-from-prolog/src/main/java/com/example/CalculatableExample.java" target="_blank">
-<code>com/example/CalculatableExample.java</code></a>:
+<a href="https://github.com/s-webber/projog-examples/blob/master/calling-java-from-prolog/src/main/java/com/example/ArithmeticOperatorExample.java" target="_blank">
+<code>com/example/ArithmeticOperatorExample.java</code></a>:
 </p>
 
 <div class="code"><code>package com.example;<br>
 <br>
-import org.projog.core.function.math.AbstractOneArgumentCalculatable;<br>
+import org.projog.core.function.math.AbstractUnaryArithmeticOperator;<br>
 <br>
 /**<br>
  * &lt;code&gt;triple(X)&lt;/code&gt; - multiples the given number by 3.<br>
  */<br>
-public class CalculatableExample extends AbstractOneArgumentCalculatable {<br>
+public class CalculatableExample extends AbstractUnaryArithmeticOperator {<br>
 <br>
 &nbsp;&nbsp;&nbsp;@Override<br>
 &nbsp;&nbsp;&nbsp;protected double calculateDouble(double input) {<br>
@@ -43,12 +43,12 @@ public class CalculatableExample extends AbstractOneArgumentCalculatable {<br>
 }</code></div>
 
 <p>
-Example of integrating <code>com.example.CalculatableExample</code> into Projog:
+Example of integrating <code>com.example.ArithmeticOperatorExample</code> into Projog:
 </p>
 
 <div class="code">
 <pre>
-?- pj_add_calculatable(triple/1, 'com.example.CalculatableExample').
+?- pj_add_arithmetic_operator(triple/1, 'com.example.ArithmeticOperatorExample').
 
 yes
 
@@ -71,8 +71,8 @@ yes
 
 <h3>See Also</h3>
 <ul>
-<li><a href="AddArithmeticFunction.html">arithmetic_function/1</li>
-<li><a href="AddCalculatable.html">pj_add_calculatable/2</li>
+<li><a href="AddUserDefinedArithmeticOperator.html">arithmetic_function/1</li>
+<li><a href="AddArithmeticOperator.html">pj_add_arithmetic_operator/2</li>
 <li><a href="https://github.com/s-webber/projog-examples/tree/master" target="_blank">The "projog-examples" GitHub project</a></li>
 </ul>
 

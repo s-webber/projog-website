@@ -6,7 +6,7 @@ including adding functionality not possible to define in pure Prolog syntax.
 <p>
 Rather than directly implementing <code>PredicateFactory</code> it is recommended to 
 extend either <a href="javadoc/org/projog/core/function/AbstractSingletonPredicate.html" title="class in org.projog.core.function"><code>AbstractSingletonPredicate</code></a>
-or <a href="javadoc/org/projog/core/function/AbstractRetryablePredicate.html" title="class in org.projog.core.function"><code>AbstractRetryablePredicate</code></a>.
+or <a href="javadoc/org/projog/core/function/AbstractPredicateFactory.html" title="class in org.projog.core.function"><code>AbstractPredicateFactory</code></a>.
 </p>
 
 <h3>Example usage</h3>
@@ -36,9 +36,9 @@ import org.projog.core.term.Atom;<br>
 import org.projog.core.term.Term;<br>
 <br>
 /**<br>
- * &lt;code&gt;uppercase(X,Y)&lt;/code&gt; - succeeds if the atom represented by Y is equal to an upper case version of the atom<br>
- * represented by X.<br>
- */<br>
+&nbsp;* &lt;code&gt;uppercase(X,Y)&lt;/code&gt; - succeeds if the atom represented by Y is equal to an upper case version of the atom<br>
+&nbsp;* represented by X.<br>
+&nbsp;*/<br>
 public class SingletonPredicateExample extends AbstractSingletonPredicate {<br>
 &nbsp;&nbsp;&nbsp;@Override<br>
 &nbsp;&nbsp;&nbsp;public boolean evaluate(Term term1, Term term2) {<br>
@@ -71,43 +71,56 @@ no
 </pre></div>
 
 <p>
-Contents of <code>com/example/RetryablePredicateExample.java</code>:
+Contents of  <a href="https://github.com/s-webber/projog-examples/blob/master/calling-java-from-prolog/src/main/java/com/example/RetryablePredicateExample.java" target="_blank">
+<code>com/example/RetryablePredicateExample.java</code></a>:
 </p>
 
 <div class="code"><code>package com.example;<br>
 <br>
-import java.util.Iterator;<br>
-import java.util.Map;<br>
-import java.util.Map.Entry;<br>
-<br>
-import org.projog.core.function.AbstractRetryablePredicate;<br>
+import org.projog.core.function.AbstractPredicate;<br>
+import org.projog.core.function.AbstractPredicateFactory;<br>
 import org.projog.core.term.Atom;<br>
 import org.projog.core.term.Term;<br>
+import org.projog.core.term.TermUtils;<br>
 <br>
-public class RetryablePredicateExample extends AbstractRetryablePredicate {<br>
-&nbsp;&nbsp;&nbsp;private Iterator&lt;Map.Entry&lt;Object, Object&gt;&gt; systemProperties;<br>
-<br>
+/**<br>
+&nbsp;* &lt;code&gt;split(X,Y)&lt;/code&gt; - compares Y to each of the comma-separated values represented by X.<br>
+&nbsp;*/<br>
+public class RetryablePredicateExample extends AbstractPredicateFactory {<br>
 &nbsp;&nbsp;&nbsp;@Override<br>
-&nbsp;&nbsp;&nbsp;public boolean evaluate(Term arg1, Term arg2) {<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (systemProperties == null) {<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;systemProperties = System.getProperties().entrySet().iterator();<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;while (systemProperties.hasNext()) {<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;arg1.backtrack();<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;arg2.backtrack();<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Entry&lt;Object, Object&gt; entry = systemProperties.next();<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;String key = (String) entry.getKey();<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;String value = (String) entry.getValue();<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (arg1.unify(new Atom(key)) &amp;&amp; arg2.unify(new Atom(value))) {<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return true;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return false;<br>
+&nbsp;&nbsp;&nbsp;public Predicate getPredicate(Term arg1, Term arg2) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;String csv = TermUtils.getAtomName(arg1);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;String[] split = csv.split(",");<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return new Predicate(split, arg2);<br>
 &nbsp;&nbsp;&nbsp;}<br>
 <br>
-&nbsp;&nbsp;&nbsp;@Override<br>
-&nbsp;&nbsp;&nbsp;public RetryablePredicateExample getPredicate(Term arg1, Term arg2) {<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return new RetryablePredicateExample();<br>
+&nbsp;&nbsp;&nbsp;private static class Predicate extends AbstractPredicate {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;private final String[] split;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;private final Term target;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;private int idx;<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Predicate(String[] split, Term target) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;this.split = split;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;this.target = target;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@Override<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;public boolean evaluate() {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;while (idx &lt; split.length) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;target.backtrack();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;String next = split[idx++];<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (target.unify(new Atom(next))) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return true;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return false;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@Override<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;public boolean couldReevaluationSucceed() {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return idx &lt; split.length;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
 &nbsp;&nbsp;&nbsp;}<br>
 }</code></div>
 
@@ -116,30 +129,24 @@ Example of integrating <code>com.example.RetryablePredicateExample</code> into P
 </p>
 
 <div class="code"><pre>
-?- pj_add_predicate(props/2, 'com.example.RetryablePredicateExample').
+?- pj_add_predicate(split/2, 'com.example.RetryablePredicateExample').
 
 yes
 
-?- props('java.vm.vendor',Y).
-Y = Oracle Corporation
+?- split('dog,cat,bird', X).
+X = dog
+
+yes ;
+
+X = cat
+
+yes ;
+
+X = bird
 
 yes ;
 
 no
-
-?- props(X,Y).
-X = java.runtime.name
-Y = Java(TM) SE Runtime Environment
-
-yes ;
-
-X = java.vm.vendor
-Y = Oracle Corporation
-
-yes ;
-
-X = java.vendor.url
-Y = http://java.oracle.com/
 </pre></div>
 
 <h3>See Also</h3>
