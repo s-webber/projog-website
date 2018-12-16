@@ -28,11 +28,11 @@
 
 	<target name="get-dependencies" depends="check-junit" unless="junit.exists">
 		<mkdir dir="lib"/>
-      <get src="${projog-test-url}" dest="${projog-test-jar}"/>
+		<get src="${projog-test-url}" dest="${projog-test-jar}"/>
 		<!-- JUnit has a dependency on Hamcrest -->
 		<get src="${hamcrest-url}" dest="${hamcrest-jar}"/>
 		<get src="${junit-url}" dest="${junit-jar}"/>
-   </target>
+	</target>
 
 <!-- CLEAN -->
 	<target name="clean" description="deletes build directory">
@@ -43,8 +43,8 @@
 	<target name="compile.build-utils">
 		<mkdir dir="build/classes/build-utils"/>
 		<path id="classpath.compile.build-utils">
-         <pathelement location="${projog-core-jar}"/>
-         <pathelement location="${projog-test-jar}"/>
+			<pathelement location="${projog-core-jar}"/>
+			<pathelement location="${projog-test-jar}"/>
 		</path>
 		<javac srcdir="src/main/java" destdir="build/classes/build-utils" debug="on" includeantruntime="false" source="${javac-target}" target="${javac-target}">
 			<compilerarg value="-Xlint:-options"/>
@@ -56,8 +56,8 @@
 		<mkdir dir="build/classes/build-utils-tests"/>
 		<path id="classpath.compile.build-utils-tests">
 			<pathelement location="${junit-jar}"/>
-         <pathelement location="${projog-core-jar}"/>
-         <pathelement location="${projog-test-jar}"/>
+			<pathelement location="${projog-core-jar}"/>
+			<pathelement location="${projog-test-jar}"/>
 			<pathelement location="build/classes/build-utils"/>
 		</path>
 		<javac srcdir="src/test/java" destdir="build/classes/build-utils-tests" debug="on" includeantruntime="false" source="${javac-target}" target="${javac-target}">
@@ -74,8 +74,8 @@
 			<formatter type="plain" usefile="false"/>
 			<classpath location="${junit-jar}"/>
 			<classpath location="${hamcrest-jar}"/>
-         <classpath location="${projog-core-jar}"/>
-         <classpath location="${projog-test-jar}"/>
+			<classpath location="${projog-core-jar}"/>
+			<classpath location="${projog-test-jar}"/>
 			<classpath location="build/classes/build-utils"/>
 			<classpath location="build/classes/build-utils-tests"/>
 			<batchtest fork="yes" todir=".">
@@ -97,13 +97,13 @@
 			</fileset>
 		</copy>
 		<copy todir="build/docs/javadoc">
-         <fileset dir="${projog-core-dir}/target/apidocs"/>
+			<fileset dir="${projog-core-dir}/target/apidocs"/>
 		</copy>
 		<java classname="org.projog.website.HtmlGenerator" failonerror="true" fork="true">
 			<arg value="${version}"/>
 			<classpath>
 				<pathelement location="${projog-core-jar}"/>
-            <pathelement location="${projog-test-jar}"/>
+				<pathelement location="${projog-test-jar}"/>
 				<pathelement location="build/classes/build-utils"/>
 				<pathelement location="build/classes/core-tests"/>
 			</classpath>
@@ -121,7 +121,7 @@
 		<zip destfile="build/${release-dir}.zip">
 			<zipfileset dir="build/etc" prefix="${release-dir}"/>
 			<zipfileset dir="${projog-core-dir}" includes="LICENSE" prefix="${release-dir}"/>
-			<zipfileset dir="${projog-core-dir}/target" includes="projog-core-*.jar" prefix="${release-dir}/lib"/>
+			<zipfileset dir="${projog-core-dir}/target" includes="projog-core-${version}.jar" prefix="${release-dir}/lib"/>
 		</zip>
 	</target>
 
@@ -132,6 +132,7 @@
 				<include name="**"/>
 			</fileset>
 			<zipfileset dir="build" includes="${release-dir}.zip" prefix="downloads"/>
+			<zipfileset dir="${projog-core-dir}/target" includes="projog-core-${version}*.jar" prefix="downloads"/>
 		</zip>
 	</target>
 </project>
