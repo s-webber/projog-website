@@ -3,7 +3,7 @@ http://www.projog.org/
 
 * Documentation:
 
-To access the manual please view the "manual.html" file in the "docs" directory.
+To access the manual please visit: http://www.projog.org/manual.html
 
 * Launching the console:
 
