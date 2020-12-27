@@ -11,7 +11,9 @@
 - concepts/prolog-io.pl
 - concepts/prolog-debugging.pl
 + Prolog Built-in Predicates
-[COMMANDS]
+[PREDICATES]
++ Prolog Arithmetic Operators
+[OPERATORS]
 + Prolog Applications
 - applications/towers-of-hanoi.pl
 * calling-prolog-from-java Using Prolog in Java Applications

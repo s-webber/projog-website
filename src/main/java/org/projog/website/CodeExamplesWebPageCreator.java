@@ -1,5 +1,5 @@
 /*
- * Copyright 2013-2014 S. Webber
+ * Copyright 2013 S. Webber
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,7 @@
  */
 package org.projog.website;
 
-import static org.projog.core.KnowledgeBaseUtils.QUESTION_PREDICATE_NAME;
+import static org.projog.core.kb.KnowledgeBaseUtils.QUESTION_PREDICATE_NAME;
 import static org.projog.website.WebsiteUtils.HTML_FILE_EXTENSION;
 import static org.projog.website.WebsiteUtils.LINE_BREAK;
 import static org.projog.website.WebsiteUtils.htmlEncode;
@@ -41,7 +41,7 @@ import org.projog.test.ProjogTestQuery;
  * Generates web pages containing example Prolog queries and responses.
  * <p>
  * The source for the web pages comes from the {@code .pl} system test files in {@link WebsiteUtils#SCRIPTS_OUTPUT_DIR}
- * AND {@link WebsiteUtils#FUNCTIONS_SCRIPT_DIR}.
+ * AND {@link WebsiteUtils#EXTRACTED_PREDICATE_TESTS_DIR}.
  *
  * @see ProjogTestParser
  */

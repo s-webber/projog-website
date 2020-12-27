@@ -5,8 +5,8 @@ The steps required for applications to interact with Projog are as follows:
 <li>Add <code>projog-core-@PROJOG_VERSION@.jar</code> to your project.</li>
 <li>Create a new <a href="javadoc/org/projog/api/Projog.html" title="class in org.projog.api"><code>Projog</code></a> instance.</li>
 <li>Load in clauses and facts using <a href="javadoc/org/projog/api/Projog.html#consultFile-java.io.File-"><code>Projog.consultFile(File)</code></a> or <a href="javadoc/org/projog/api/Projog.html#consultReader-java.io.Reader-"><code>Projog.consultReader(Reader)</code></a>.</li>
-<li>Create a <a href="javadoc/org/projog/api/QueryStatement.html" title="class in org.projog.api"><code>QueryStatement</code></a> by using <a href="javadoc/org/projog/api/Projog.html#query-java.lang.String-"><code>Projog.query(String)</code></a>.</li>
-<li>Create a <a href="javadoc/org/projog/api/QueryResult.html" title="class in org.projog.api"><code>QueryResult</code></a> by using <a href="javadoc/org/projog/api/QueryStatement.html#getResult--"><code>QueryStatement.getResult()</code></a>.</li>
+<li>Create a <a href="javadoc/org/projog/api/QueryStatement.html" title="class in org.projog.api"><code>QueryStatement</code></a> by using <a href="javadoc/org/projog/api/Projog.html#createStatement-java.lang.String-"><code>Projog.createStatement(String)</code></a>.</li>
+<li>Create a <a href="javadoc/org/projog/api/QueryResult.html" title="class in org.projog.api"><code>QueryResult</code></a> by using <a href="javadoc/org/projog/api/QueryStatement.html#executeQuery--"><code>QueryStatement.executeQuery()</code></a>.</li>
 <li>Iterate through all possible solutions to the query by using <a href="javadoc/org/projog/api/QueryResult.html#next--"><code>QueryResult.next()</code></a>.</li>
 <li>For each solution get the <a href="javadoc/org/projog/core/term/Term.html" title="interface in org.projog.core.term"><code>Term</code></a> instantiated to a <a href="javadoc/org/projog/core/term/Variable.html" title="class in org.projog.core.term"><code>Variable</code></a> in the query by calling <a href="javadoc/org/projog/api/QueryResult.html#getTerm-java.lang.String-"><code>QueryResult.getTerm(String)</code></a>.</li>
 </ul>
@@ -42,38 +42,34 @@ import org.projog.core.term.Atom;<br>
 <br>
 public class ProjogExample {<br>
 &nbsp;&nbsp;&nbsp;public static void main(String[] args) {<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// Create a new Projog instance<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Projog p = new Projog();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// Create a new Projog instance.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Projog projog = new Projog();<br>
 <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// Read Prolog facts and rules from a file to populate the "Projog" instance created in step 1.<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;p.consultFile(new File("src/main/resources/test.pl"));<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// Read Prolog facts and rules from a file to populate the "Projog" instance.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;projog.consultFile(new File("src/main/resources/test.pl"));<br>
 <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// Create a query that will use the facts read in step 2.<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;QueryStatement s1 = p.query("test(X,Y).");<br>
-<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// Execute the query created in step 3.<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;QueryResult r1 = s1.getResult();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// Execute a query and iterate through all the results.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;QueryResult r1 = projog.executeQuery("test(X,Y).");<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;while (r1.next()) {<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;System.out.println("X = " + r1.getTerm("X") + " Y = " + r1.getTerm("Y"));<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
 <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// Execute the query created in step 3, after specifying a term for one of the variables contained in the query.<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;QueryResult r2 = s1.getResult();<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;r2.setTerm("X", new Atom("d"));<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// Execute a query, set a variable and iterate through all the results.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;QueryStatement s1 = projog.createStatement("test(X,Y).");<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;s1.setTerm("X", new Atom("d"));<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;QueryResult r2 = s1.executeQuery();<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;while (r2.next()) {<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;System.out.println("Y = " + r2.getTerm("Y"));<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
 <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// Create and execute a new query that will use the rule read in step 2.<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;QueryStatement s2 = p.query("testRule(X).");<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;QueryResult r3 = s2.getResult();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// Execute a query and iterate through all the results.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;QueryResult r3 = projog.executeQuery("testRule(X).");<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;while (r3.next()) {<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;System.out.println("X = " + r3.getTerm("X"));<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
 <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// Create and execute a new query that uses a conjunction. See: http://www.projog.org/Conjunction.html<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;QueryStatement s3 = p.query("test(X, Y), Y&lt;3.");<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;QueryResult r4 = s3.getResult();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// Execute a query that uses a conjunction. See: http://projog.org/Conjunction.html<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;QueryResult r4 = projog.executeQuery("test(X, Y), Y<3.");<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;while (r4.next()) {<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;System.out.println("X = " + r4.getTerm("X") + " Y = " + r4.getTerm("Y"));<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>

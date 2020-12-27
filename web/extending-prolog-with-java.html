@@ -1,12 +1,12 @@
 <p>
-Projog provides a mechanism for "plugging in" or "injecting" implementations of <a href="javadoc/org/projog/core/PredicateFactory.html" title="interface in org.projog.core"><code>PredicateFactory</code></a> at runtime. 
+Projog provides a mechanism for "plugging in" or "injecting" implementations of <a href="javadoc/org/projog/core/predicate/PredicateFactory.html" title="interface in org.projog.core.predicate"><code>PredicateFactory</code></a> at runtime. 
 This mechanism provides an easy way to configure and extend the functionality of Projog - 
 including adding functionality not possible to define in pure Prolog syntax.
 </p>
 <p>
 Rather than directly implementing <code>PredicateFactory</code> it is recommended to 
-extend either <a href="javadoc/org/projog/core/function/AbstractSingletonPredicate.html" title="class in org.projog.core.function"><code>AbstractSingletonPredicate</code></a>
-or <a href="javadoc/org/projog/core/function/AbstractPredicateFactory.html" title="class in org.projog.core.function"><code>AbstractPredicateFactory</code></a>.
+extend either <a href="javadoc/org/projog/core/predicate/AbstractSingleResultPredicate.html" title="class in org.projog.core.predicate"><code>AbstractSingleResultPredicate</code></a>
+or <a href="javadoc/org/projog/core/predicate/AbstractPredicateFactory.html" title="class in org.projog.core.predicate"><code>AbstractPredicateFactory</code></a>.
 </p>
 
 <h3>Example usage</h3>
@@ -23,23 +23,25 @@ If your project is configured using Maven then you can add a dependency on Projo
 &lt;/dependency&gt;</code></div>
 
 <p>
-Contents of <a href="https://github.com/s-webber/projog-examples/blob/master/calling-java-from-prolog/src/main/java/com/example/SingletonPredicateExample.java" target="_blank">
-<code>com/example/SingletonPredicateExample.java</code></a>:
+Contents of <a href="https://github.com/s-webber/projog-examples/blob/master/calling-java-from-prolog/src/main/java/com/example/SingleResultPredicateExample.java" target="_blank">
+<code>com/example/SingleResultPredicateExample.java</code></a>:
 </p>
 
 <div class="code"><code>package com.example;<br>
 <br>
 import static org.projog.core.term.TermUtils.getAtomName;<br>
 <br>
-import org.projog.core.function.AbstractSingletonPredicate;<br>
+import org.projog.core.predicate.AbstractSingleResultPredicate;<br>
 import org.projog.core.term.Atom;<br>
 import org.projog.core.term.Term;<br>
 <br>
 /**<br>
-&nbsp;* &lt;code&gt;uppercase(X,Y)&lt;/code&gt; - succeeds if the atom represented by Y is equal to an upper case version of the atom<br>
+&nbsp;* uppercase(X,Y) - succeeds if the atom represented by Y is equal to an upper case version of the atom<br>
 &nbsp;* represented by X.<br>
+&nbsp;*<br>
+&nbsp;* @see RetryablePredicateExample<br>
 &nbsp;*/<br>
-public class SingletonPredicateExample extends AbstractSingletonPredicate {<br>
+public class SingleResultPredicateExample extends AbstractSingleResultPredicate {<br>
 &nbsp;&nbsp;&nbsp;@Override<br>
 &nbsp;&nbsp;&nbsp;public boolean evaluate(Term term1, Term term2) {<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Atom upperCaseTerm1 = new Atom(getAtomName(term1).toUpperCase());<br>
@@ -48,11 +50,11 @@ public class SingletonPredicateExample extends AbstractSingletonPredicate {<br>
 }</code></div>
 
 <p>
-Example of integrating <code>org.projog.example.SingletonPredicateExample</code> into Projog:
+Example of integrating <code>org.projog.example.SingleResultPredicateExample</code> into Projog:
 </p>
 
 <div class="code"><pre>
-?- pj_add_predicate(uppercase/2, 'org.projog.example.SingletonPredicateExample').
+?- pj_add_predicate(uppercase/2, 'org.projog.example.SingleResultPredicateExample').
 
 yes
 
@@ -77,29 +79,31 @@ Contents of  <a href="https://github.com/s-webber/projog-examples/blob/master/ca
 
 <div class="code"><code>package com.example;<br>
 <br>
-import org.projog.core.function.AbstractPredicate;<br>
-import org.projog.core.function.AbstractPredicateFactory;<br>
+import org.projog.core.predicate.AbstractPredicateFactory;<br>
+import org.projog.core.predicate.Predicate;<br>
 import org.projog.core.term.Atom;<br>
 import org.projog.core.term.Term;<br>
 import org.projog.core.term.TermUtils;<br>
 <br>
 /**<br>
-&nbsp;* &lt;code&gt;split(X,Y)&lt;/code&gt; - compares Y to each of the comma-separated values represented by X.<br>
+&nbsp;* split(X,Y) - compares Y to each of the comma-separated values represented by X.<br>
+&nbsp;*<br>
+&nbsp;* @see SingleResultPredicateExample<br>
 &nbsp;*/<br>
 public class RetryablePredicateExample extends AbstractPredicateFactory {<br>
 &nbsp;&nbsp;&nbsp;@Override<br>
 &nbsp;&nbsp;&nbsp;public Predicate getPredicate(Term arg1, Term arg2) {<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;String csv = TermUtils.getAtomName(arg1);<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;String[] split = csv.split(",");<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return new Predicate(split, arg2);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return new RetryablePredicate(split, arg2);<br>
 &nbsp;&nbsp;&nbsp;}<br>
 <br>
-&nbsp;&nbsp;&nbsp;private static class Predicate extends AbstractPredicate {<br>
+&nbsp;&nbsp;&nbsp;private static class RetryablePredicate implements Predicate {<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;private final String[] split;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;private final Term target;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;private int idx;<br>
 <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Predicate(String[] split, Term target) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;RetryablePredicate(String[] split, Term target) {<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;this.split = split;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;this.target = target;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>

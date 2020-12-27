@@ -1,5 +1,5 @@
 /*
- * Copyright 2013-2014 S. Webber
+ * Copyright 2013 S. Webber
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,8 +17,9 @@ package org.projog.website;
 
 import static org.projog.website.WebsiteUtils.DOCS_OUTPUT_DIR;
 import static org.projog.website.WebsiteUtils.FOOTER_HTML;
-import static org.projog.website.WebsiteUtils.FUNCTIONS_SCRIPT_DIR;
-import static org.projog.website.WebsiteUtils.FUNCTION_PACKAGE_DIR;
+import static org.projog.website.WebsiteUtils.EXTRACTED_PREDICATE_TESTS_DIR;
+import static org.projog.website.WebsiteUtils.EXTRACTED_OPERATOR_TESTS_DIR;
+import static org.projog.website.WebsiteUtils.BUILTIN_PREDICATES_PACKAGE_DIR;
 import static org.projog.website.WebsiteUtils.HEADER_HTML;
 import static org.projog.website.WebsiteUtils.LINE_BREAK;
 import static org.projog.website.WebsiteUtils.MANUAL_HTML;
@@ -81,9 +82,10 @@ public final class HtmlGenerator {
       CodeExamplesWebPageCreator hg = new CodeExamplesWebPageCreator();
       hg.generate(new File(SCRIPTS_OUTPUT_DIR, "concepts"));
       hg.generate(new File(SCRIPTS_OUTPUT_DIR, "applications"));
-      List<CodeExampleWebPage> indexOfGeneratedPages = hg.generate(FUNCTIONS_SCRIPT_DIR);
+      List<CodeExampleWebPage> indexOfBuiltinPredicatePages = hg.generate(EXTRACTED_PREDICATE_TESTS_DIR);
+      List<CodeExampleWebPage> indexOfBuiltinOperatorPages = hg.generate(EXTRACTED_OPERATOR_TESTS_DIR);
 
-      TableOfContentsReader tocReader = new TableOfContentsReader(indexOfGeneratedPages, getPackageDescriptions());
+      TableOfContentsReader tocReader = new TableOfContentsReader(indexOfBuiltinPredicatePages, indexOfBuiltinOperatorPages, getBuiltinPredicatesPackageDescriptions());
       List<TableOfContentsEntry> entries = tocReader.getEntries();
       produceBuiltInPredicatesIndexPage();
       produceTableOfContents(entries);
@@ -107,9 +109,9 @@ public final class HtmlGenerator {
       }
    }
 
-   private static Map<String, String> getPackageDescriptions() {
+   private static Map<String, String> getBuiltinPredicatesPackageDescriptions() {
       HashMap<String, String> packageDescriptions = new HashMap<>();
-      for (File dir : FUNCTION_PACKAGE_DIR.listFiles()) {
+      for (File dir : BUILTIN_PREDICATES_PACKAGE_DIR.listFiles()) {
          File packageInfo = new File(dir, "package-info.java");
          if (packageInfo.exists()) {
             String packageName = dir.getPath().substring(SOURCE_INPUT_DIR_NAME.length()).replace(File.separatorChar, '.');

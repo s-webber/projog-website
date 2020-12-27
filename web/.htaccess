@@ -1,0 +1,45 @@
+# PageSpeed: Specify a character set (in HTTP headers)
+AddCharset UTF-8 .html
+
+<FilesMatch "\.(js|css|html)$">
+    Header append Vary: Accept-Encoding
+</FilesMatch>
+
+# 1 week 604800, 12 hours 43200, 2 hours 7200
+<FilesMatch "\.(js|gif|png|jpg|css)$">
+    Header set Cache-Control "max-age=7200, public"
+</FilesMatch>
+<FilesMatch "\.(html)$">
+    Header set Cache-Control "max-age=7200, public"
+</FilesMatch>
+
+ErrorDocument 400 http://www.projog.org/error.html
+ErrorDocument 401 http://www.projog.org/error.html
+ErrorDocument 402 http://www.projog.org/error.html
+ErrorDocument 403 http://www.projog.org/error.html
+ErrorDocument 404 http://www.projog.org/error.html
+ErrorDocument 405 http://www.projog.org/error.html
+ErrorDocument 406 http://www.projog.org/error.html
+ErrorDocument 407 http://www.projog.org/error.html
+ErrorDocument 408 http://www.projog.org/error.html
+ErrorDocument 409 http://www.projog.org/error.html
+ErrorDocument 410 http://www.projog.org/error.html
+ErrorDocument 411 http://www.projog.org/error.html
+ErrorDocument 412 http://www.projog.org/error.html
+ErrorDocument 413 http://www.projog.org/error.html
+ErrorDocument 414 http://www.projog.org/error.html
+ErrorDocument 415 http://www.projog.org/error.html
+ErrorDocument 416 http://www.projog.org/error.html
+
+ErrorDocument 500 http://www.projog.org/error.html
+ErrorDocument 501 http://www.projog.org/error.html
+ErrorDocument 502 http://www.projog.org/error.html
+ErrorDocument 503 http://www.projog.org/error.html
+ErrorDocument 504 http://www.projog.org/error.html
+ErrorDocument 505 http://www.projog.org/error.html
+
+Redirect 301 /defaultsite http://www.projog.org/error.html
+
+Options -Indexes
+Options -MultiViews
+CheckSpelling off

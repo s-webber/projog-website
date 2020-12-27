@@ -1,5 +1,5 @@
 <p>
-Projog provides a mechanism for "plugging in" or "injecting" implementations of <a href="javadoc/org/projog/core/ArithmeticOperator.html" title="interface in org.projog.core"><code>ArithmeticOperator</code></a> at runtime.
+Projog provides a mechanism for "plugging in" or "injecting" implementations of <a href="javadoc/org/projog/core/math/ArithmeticOperator.html" title="interface in org.projog.core.math"><code>ArithmeticOperator</code></a> at runtime.
 This mechanism provides an easy way to configure and extend the arithmetic operations supported by Projog.
 </p>
 
@@ -22,23 +22,21 @@ Contents of
 <code>com/example/ArithmeticOperatorExample.java</code></a>:
 </p>
 
-<div class="code"><code>package com.example;<br>
+<div class="code"><code>package org.projog.example;<br>
 <br>
-import org.projog.core.function.math.AbstractUnaryArithmeticOperator;<br>
+import static org.projog.core.term.TermUtils.castToNumeric;<br>
 <br>
-/**<br>
- * &lt;code&gt;triple(X)&lt;/code&gt; - multiples the given number by 3.<br>
- */<br>
-public class CalculatableExample extends AbstractUnaryArithmeticOperator {<br>
+import org.projog.core.math.ArithmeticOperator;<br>
+import org.projog.core.math.Numeric;<br>
+import org.projog.core.term.IntegerNumber;<br>
+import org.projog.core.term.Term;<br>
 <br>
+public class CalculatableExample implements ArithmeticOperator {<br>
 &nbsp;&nbsp;&nbsp;@Override<br>
-&nbsp;&nbsp;&nbsp;protected double calculateDouble(double input) {<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return input * 3;<br>
-&nbsp;&nbsp;&nbsp;}<br>
-<br>
-&nbsp;&nbsp;&nbsp;@Override<br>
-&nbsp;&nbsp;&nbsp;protected long calculateLong(long input) {<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return input * 3;<br>
+&nbsp;&nbsp;&nbsp;public Numeric calculate(Term[] args) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Numeric input = castToNumeric(args[0]);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;long rounded = Math.round(input.getDouble());<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return new IntegerNumber(rounded);<br>
 &nbsp;&nbsp;&nbsp;}<br>
 }</code></div>
 

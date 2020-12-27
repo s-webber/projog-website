@@ -1,5 +1,5 @@
 /*
- * Copyright 2013-2014 S. Webber
+ * Copyright 2013 S. Webber
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,29 +24,30 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.projog.api.Projog;
-import org.projog.core.KnowledgeBaseUtils;
-import org.projog.core.Operands;
-import org.projog.core.PredicateKey;
+import org.projog.core.parser.Operands;
 import org.projog.core.parser.SentenceParser;
+import org.projog.core.predicate.PredicateKey;
 import org.projog.core.term.Term;
 
 /** Constants and utility methods used in the build process. */
 final class WebsiteUtils {
    static final PredicateKey ADD_PREDICATE_KEY = new PredicateKey("pj_add_predicate", 2);
    static final PredicateKey ADD_CALCULATABLE_KEY = new PredicateKey("pj_add_calculatable", 2);
-   static final String FUNCTION_PACKAGE_NAME = "org.projog.core.function";
+   static final String BUILTIN_PREDICATES_PACKAGE_NAME = "org.projog.core.predicate.builtin";
+   static final String BUILTIN_OPERATORS_PACKAGE_NAME = "org.projog.core.math.builtin";
    private static final File BUILD_DIR = new File("build");
    static final File WEB_SRC_DIR = new File("web");
    static final File DOCS_OUTPUT_DIR = new File(BUILD_DIR, "docs");
    static final File BOOTSTRAP_FILE = new File("../projog/src/main/resources/projog-bootstrap.pl");
-   static final File FUNCTIONS_SCRIPT_DIR = new File("../projog/target/prolog-tests-extracted-from-java");
+   static final File EXTRACTED_PREDICATE_TESTS_DIR = new File("../projog/target/prolog-predicate-tests-extracted-from-java");
+   static final File EXTRACTED_OPERATOR_TESTS_DIR = new File("../projog/target/prolog-operator-tests-extracted-from-java");
    static final File SCRIPTS_OUTPUT_DIR = new File("../projog/src/test/prolog");
    static final File MANUAL_TEMPLATE = new File(WEB_SRC_DIR, "manual.txt");
    static final File STATIC_PAGES_LIST = new File(WEB_SRC_DIR, "static_pages.properties");
    static final File COMMANDS_INDEX_FILE = new File(DOCS_OUTPUT_DIR, "prolog-predicates.html");
    static final String SOURCE_INPUT_DIR_NAME = "../projog/src/main/java/";
    static final File SOURCE_INPUT_DIR = new File(SOURCE_INPUT_DIR_NAME);
-   static final File FUNCTION_PACKAGE_DIR = new File(SOURCE_INPUT_DIR, FUNCTION_PACKAGE_NAME.replace('.', File.separatorChar));
+   static final File BUILTIN_PREDICATES_PACKAGE_DIR = new File(SOURCE_INPUT_DIR, BUILTIN_PREDICATES_PACKAGE_NAME.replace('.', File.separatorChar));
    static final String LINE_BREAK = "\n";
    static final String HTML_FILE_EXTENSION = ".html";
    private static final String PROLOG_FILE_EXTENSION = ".pl";
@@ -84,7 +85,7 @@ final class WebsiteUtils {
    }
 
    static Term[] parseTermsFromFile(File f) {
-      Operands operands = KnowledgeBaseUtils.getOperands(new Projog().getKnowledgeBase());
+      Operands operands = new Projog().getKnowledgeBase().getOperands();
       try (FileReader fr = new FileReader(f)) {
          SentenceParser sp = SentenceParser.getInstance(fr, operands);
 

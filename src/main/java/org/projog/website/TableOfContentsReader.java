@@ -32,13 +32,16 @@ import java.util.Map;
  */
 final class TableOfContentsReader {
    private final TableOfContentsEntryFactory entryFactory;
-   private final CommandSectionIterator commandSectionIterator;
+   private final CommandSectionIterator predicateSectionIterator;
+   private final CommandSectionIterator operatorSectionIterator;
    private final List<String> contents;
-   private boolean isInCommandsSection;
+   private boolean isInPredicatesSection;
+   private boolean isInOperatorsSection;
 
-   TableOfContentsReader(List<CodeExampleWebPage> indexOfGeneratedPages, Map<String, String> packageDescriptions) {
+   TableOfContentsReader(List<CodeExampleWebPage> indexOfBuiltinPredicatePages, List<CodeExampleWebPage> indexOfBuiltinOperatorPages, Map<String, String> packageDescriptions) {
       this.entryFactory = new TableOfContentsEntryFactory();
-      this.commandSectionIterator = new CommandSectionIterator(indexOfGeneratedPages, packageDescriptions, entryFactory);
+      this.predicateSectionIterator = new CommandSectionIterator(indexOfBuiltinPredicatePages, packageDescriptions, entryFactory);
+      this.operatorSectionIterator = new CommandSectionIterator(indexOfBuiltinOperatorPages, packageDescriptions, entryFactory);
       this.contents = readTableOfContents();
    }
 
@@ -78,14 +81,22 @@ final class TableOfContentsReader {
 
    private TableOfContentsEntry getNext() {
       while (true) {
-         if (isInCommandsSection) {
-            if (commandSectionIterator.hasNext()) {
-               return commandSectionIterator.next();
+         if (isInPredicatesSection) {
+            if (predicateSectionIterator.hasNext()) {
+               return predicateSectionIterator.next();
             } else {
-               isInCommandsSection = false;
+               isInPredicatesSection = false;
             }
          }
 
+         if (isInOperatorsSection) {
+             if (operatorSectionIterator.hasNext()) {
+                return operatorSectionIterator.next();
+             } else {
+            	 isInOperatorsSection = false;
+             }
+          }
+         
          if (contents.isEmpty()) {
             // end of file
             return null;
@@ -98,9 +109,12 @@ final class TableOfContentsReader {
             return getSectionItem(next);
          } else if (isSubSection(next)) {
             return getSubSectionItem(next);
-         } else if (isCommandsSection(next)) {
-            isInCommandsSection = true;
+         } else if (isPredicatesSection(next)) {
+            isInPredicatesSection = true;
             return entryFactory.createSubSectionItem("Index of Built-in Predicates", COMMANDS_INDEX_FILE.getName());
+         } else if (isOperatorsSection(next)) {
+             isInOperatorsSection = true;
+             // TODO add link to "index of arithmetic operators page"
          }
          // else move on to next line
       }
@@ -118,8 +132,12 @@ final class TableOfContentsReader {
       return line.startsWith("- ");
    }
 
-   private static boolean isCommandsSection(String line) {
-      return line.equals("[COMMANDS]");
+   private static boolean isPredicatesSection(String line) {
+      return line.equals("[PREDICATES]");
+   }
+
+   private static boolean isOperatorsSection(String line) {
+	   return line.equals("[OPERATORS]");
    }
 
    private TableOfContentsEntry getSectionHeader(String line) {

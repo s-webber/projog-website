@@ -1,1 +1,1 @@
-Generates the content of the [Projog website](http://www.projog.org/).
+Generates the content of the [Projog](http://www.projog.org "Prolog interpreter for Java") website. Projog is an open source library that provides a way to integrate Java with [Prolog](https://en.wikipedia.org/wiki/Prolog).

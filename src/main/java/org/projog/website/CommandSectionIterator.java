@@ -61,7 +61,8 @@ final class CommandSectionIterator {
    TableOfContentsEntry next() {
       CodeExampleWebPage p = indexOfGeneratedPages.get(0);
       String currentPackage = getPackageName(p);
-      if (currentPackage.equals(previousPackage)) {
+      // do not display package description for build-in predicates
+      if (currentPackage.equals(WebsiteUtils.BUILTIN_OPERATORS_PACKAGE_NAME) || currentPackage.equals(previousPackage)) {
          indexOfGeneratedPages.remove(0);
          return entryFactory.createSubSectionItem(p.getTitle(), p.getHtmlFileName());
       } else {
