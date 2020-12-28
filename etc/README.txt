@@ -16,16 +16,16 @@ You can optionally provide names of files, containing Prolog syntax, as argument
 e.g.:
 
 projog-bin> java -version
-java version "1.7.0_45"
-Java(TM) SE Runtime Environment (build 1.7.0_45-b18)
-Java HotSpot(TM) Client VM (build 24.45-b08, mixed mode, sharing)
+java version "1.8.0_172"
+Java(TM) SE Runtime Environment (build 1.8.0_172-b11)
+Java HotSpot(TM) 64-Bit Server VM (build 25.172-b11, mixed mode)
 
 projog-bin> projog-console.sh towers-of-hanoi-example.pl
 
-[14577460] INFO Reading prolog source in: projog-bootstrap.pl from classpath
+INFO Reading prolog source in: projog-bootstrap.pl from classpath
 Projog Console
-www.projog.org
-[14577460] INFO Reading prolog source in: towers-of-hanoi-example.pl from file system
+projog.org
+INFO Reading prolog source in: towers-of-hanoi-example.pl from file system
 
 ?- hanoi(2).
 [move,a,disc,from,the,left,pole,to,the,right,pole]
