@@ -1,0 +1,169 @@
+<h2>Use of Design Patterns in Projog</h2>
+
+<p>
+A design pattern is a reusable solution to a common problem in software design.
+Design patterns provide a common vocabulary for the documentation, discussion and reuse of software design.
+Below are examples of implementations of design patterns within the <a href="http://www.projog.org/" title="Prolog logic programming language for the Java platform" target="_blank">Projog</a> project.
+(The quotes in <i>italics</i> are taken from <i>Design Patterns: Elements of Reusable Design</i> Addison Whiley, 1995.)
+</p>
+
+<h3>Factory Method</h3>
+<blockquote>
+<p>Define an interface for creating an object, but let subclasses decide which class to instantiate. 
+Factory Method lets a class defer instantiation to subclasses.</p>
+</blockquote>
+<p>
+The <a href="http://www.projog.org/javadoc/org/projog/core/predicate/PredicateFactory.html" title="org.projog.core.predicate.PredicateFactory" target="_blank"><code>PredicateFactory</code></a> interface has a <code>Predicate getPredicate(Term...)</code> method.
+Each implementation of <code>PredicateFactory</code> gets to specify which subclass of <a href="http://www.projog.org/javadoc/org/projog/core/predicate/Predicate.html" title="org.projog.core.predicate.Predicate" target="_blank"><code>Predicate</code></a> it creates.
+The <code>PredicateFactory</code> subclasses used by a Projog instance are specified at runtime using Prolog syntax -
+providing a flexible way to configure the functionality available to developers of Prolog code.
+As the "core" engine only deals with the <code>PredicateFactory</code> and <code>Predicate</code> interfaces
+it does not need to know about every <code>Predicate</code> subclass - meaning it does not need to be modified
+each time new functionality is required. (See <a href="http://www.projog.org/extending-prolog-with-java.html" target="_blank">Adding Extra Functionality to Prolog Using Java</a>.)
+</p>
+<img src="images/InterpretedTailRecursivePredicateFactory.png" class="centeredblock" width="527 height="165" alt="Use of the Factory Method pattern by PredicateFactory" title="Use of the Factory Method pattern by PredicateFactory"><center style='font-size: 12px; line-height=100%'><b>Use of the Factory Method pattern by PredicateFactory</b></center>
+
+<h3>Prototype</h3>
+<blockquote>
+<p>Specify the kind of objects to create using a prototypical instance, and create new objects by copying this prototype.</p>
+</blockquote>
+<p>
+Instances of <a href="http://www.projog.org/javadoc/org/projog/core/predicate/udp/ClauseAction.html" title="org.projog.core.predicate.udp.ClauseAction" target="_blank"><code>ClauseAction</code></a> represent how a particular clause should be evaluated.
+They are constructed from Prolog syntax parsed at runtime.
+When the code needs to use a <code>ClauseAction</code> it calls the 
+<code>getFree()</code> method and uses the copy returned rather than the original.
+As calling <code>evaluate(Term[])</code> on a <code>ClauseAction</code>
+can alter the objects internal attributes it is necessary to always use a copy rather than the original.
+</p>
+
+<h3>Singleton</h3>
+<blockquote>
+<p>Ensure a class only has one instance, and provide a global point of access to it.</p>
+</blockquote>
+<p>
+As Projog is designed to support multiple independent inference engines in the same JVM
+there are a few classes that only have one instance per inference engine but not necessarily only one instance per JVM.
+<a href="http://www.projog.org/javadoc/org/projog/core/kb/KnowledgeBaseServiceLocator.html" title="org.projog.core.kb.KnowledgeBaseServiceLocator" target="_blank"><code>KnowledgeBaseServiceLocator</code></a> manages resources that are shared between different components of the same inference engine.
+</p>
+<img src="images/KnowledgeBaseServiceLocator.png" class="centeredblock" width="558 height="298" alt="KnowledgeBaseServiceLocator manages the various resources of a single inference engine" title="KnowledgeBaseServiceLocator manages the various resources of a single inference engine"><center style='font-size: 12px; line-height=100%'><b>KnowledgeBaseServiceLocator manages the various resources of a single inference engine</b></center>
+
+<p>
+There are some classes that are safe to have only one instance of across multiple inference engines.
+When a class is immutable and all its attributes are set at compile time it makes sense to always reuse a single instance for performance reasons.
+Examples of classes that only ever require one instance are <a href="http://www.projog.org/javadoc/org/projog/core/term/EmptyList.html" title="org.projog.core.term.EmptyList" target="_blank"><code>EmptyList</code></a>, <a href="http://www.projog.org/javadoc/org/projog/core/term/TermComparator.html" title="org.projog.core.term.TermComparator" target="_blank"><code>TermComparator</code></a> and <a href="http://www.projog.org/javadoc/org/projog/core/math/NumericTermComparator.html" title="org.projog.core.math.NumericTermComparator" target="_blank"><code>NumericTermComparator</code></a>.
+A single instance of each of these classes is enforced by making the constructors <code>private</code> and 
+providing a <code>public static final</code> variable.
+</p>
+
+<h3>Composite</h3>
+<blockquote>
+<p>Compose objects into tree structures to represent part-whole hierarchies.
+Composite lets clients treat individual objects and compositions of objects uniformly.</p>
+</blockquote>
+<p>
+Compound terms are represented in Projog by the <a href="http://www.projog.org/javadoc/org/projog/core/term/Structure.html" title="org.projog.core.term.Structure" target="_blank"><code>Structure</code></a> implementation of the <a href="http://www.projog.org/javadoc/org/projog/core/term/Term.html" title="org.projog.core.term.Term" target="_blank"><code>Term</code></a> interface.
+<code>Structure</code> objects consist of other <code>Term</code> objects representing the compound term's arguments.
+As an argument of a <code>Structure</code> can be another <code>Structure</code> it is possible to use it to represent complex tree data structures.
+Client code can use a <code>Term</code> instance without knowing if it is a <code>Structure</code>.
+</p>
+<img src="images/Structure.png" class="centeredblock" width="98 height="143" alt="Use of the Composite pattern by Structure" title="Use of the Composite pattern by Structure"><center style='font-size: 12px; line-height=100%'><b>Use of the Composite pattern by Structure</b></center>
+
+<h3>Facade</h3>
+<blockquote>
+<p>Provide a unified interface to a set of interfaces in a subsystem.
+Facade defines a higher-level interface that makes the subsystem easier to use.</p>
+</blockquote>
+<p>
+<a href="http://www.projog.org/javadoc/org/projog/api/Projog.html" title="org.projog.api.Projog" target="_blank"><code>Projog</code></a> provides a single high-level entry point for 
+Java client applications to interface with an instance of a Prolog inference engine.
+By shielding client code from the low-level implementation of the "core" inference engine <code>Projog</code> reduces coupling.
+(See <a href="http://www.projog.org/calling-prolog-from-java.html" target="_blank">Using Prolog in Java Applications</a>.)
+</p>
+<img src="images/Projog.png" class="centeredblock" width="662 height="1258" alt="Use of the Facade pattern by Projog" title="Use of the Facade pattern by Projog"><center style='font-size: 12px; line-height=100%'><b>Use of the Facade pattern by Projog</b></center>
+
+<h3>Iterator</h3>
+<blockquote>
+<p>Provide a way to access the elements of an aggregate object sequentially without exposing its underlying representation.</p>
+</blockquote>
+<p>
+The clauses of a dynamic user defined predicate are represented as <code>ClauseActionMetaData</code> objects.
+Each <code>ClauseActionMetaData</code> object contains a <a href="http://www.projog.org/javadoc/org/projog/core/predicate/udp/ClauseModel.html" title="org.projog.core.predicate.udp.ClauseModel" target="_blank"><code>ClauseModel</code></a> member variable and a reference to the 
+<code>ClauseActionMetaData</code> objects immediately before and after it (i.e. a double linked-list data structure).
+<a href="http://www.projog.org/javadoc/org/projog/core/predicate/udp/DynamicUserDefinedPredicateFactory.html#getImplications--" title="org.projog.core.predicate.udp.DynamicUserDefinedPredicateFactory.getImplications()" target="_blank"><code>DynamicUserDefinedPredicateFactory.getImplications()</code></a> returns a <code>ImplicationsIterator</code> that
+provides low coupling between the the data structure used to store the clauses and any code that traverses them.
+As <code>ImplicationsIterator</code> 
+implements <code>java.util.Iterator</code> it provides a familiar way for the clauses to be accessed sequentially
+(including in an enhanced for loop).
+</p>
+<img src="images/DynamicUserDefinedPredicateFactory.png" class="centeredblock" width="258 height="342" alt="Use of the Iterator pattern by ImplicationsIterator" title="Use of the Iterator pattern by ImplicationsIterator"><center style='font-size: 12px; line-height=100%'><b>Use of the Iterator pattern by ImplicationsIterator</b></center>
+
+<h3>Memento</h3>
+<blockquote>
+<p>Without violating encapsulation, capture and externalize an object's internal state 
+so that the object can be restored to this state later</p>
+</blockquote>
+<p>
+As standard, Projog provides <a href="http://www.projog.org/Write.html" title="Prolog command to write to output stream" target="_blank"><code>write(X)</code></a> and <a href="http://www.projog.org/Read.html" title="Prolog command to read from input stream" target="_blank"><code>read(X)</code></a> built-in predicates
+for writing terms to a file which can then later be read to recreate the terms. 
+</p>
+
+<h3>Observer</h3>
+<blockquote>
+<p>Define a one-to-many dependency between objects so that when one object changes state, 
+all its dependents are notified and updated automatically.</p>
+</blockquote>
+<p>
+By using <code>java.util.Observable</code> and <code>java.util.Observer</code>,
+Projog uses a familiar approach to allow clients to get feedback from the inference engine - such as the exact steps taken in the evaluation of a particular query.
+For a concrete example of the observer pattern in Projog see the description of the <a href="projog-class-diagrams#console-application">console application</a>.
+</p>
+
+<h3>State</h3>
+<blockquote>
+<p>Allow an object to alter its behaviour when its internal state changes. 
+The object will appear to change its class.</p>
+</blockquote>
+<p>
+<a href="http://www.projog.org/javadoc/org/projog/core/term/Variable.html" title="org.projog.core.term.Variable" target="_blank"><code>Variable</code></a> has a <code>Term</code> 
+member variable which provides a reference to the value the <code>Variable</code> is currently instantiated to.
+When a <code>Variable</code> is instantiated to another <code>Term</code> it delegates any method calls to it.
+To client code, a <code>Variable</code> behaves just like the <code>Term</code> it is currently instantiated to.
+Over its lifetime a <code>Variable</code> can be instantiated to a number of other <code>Term</code> instances.
+</p>
+<img src="images/Variable.png" class="centeredblock" width="190 height="51" alt="Use of the State pattern by Variable" title="Use of the State pattern by Variable"><center style='font-size: 12px; line-height=100%'><b>Use of the State pattern by Variable</b></center>
+
+<h3>Strategy</h3>
+<blockquote>
+<p>Define a family of algorithms, encapsulate each one, and make them interchangeable.
+Strategy lets the algorithm vary independently from clients that use it.</p>
+</blockquote>
+<p>
+Projog supports the common arithmetic operations.
+Each arithmetic operation is encapsulated in its own single class that implements <a href="http://www.projog.org/javadoc/org/projog/core/math/ArithmeticOperator.html" title="org.projog.core.math.ArithmeticOperator" target="_blank"><code>ArithmeticOperator</code></a>.
+By developing new implementations of <code>ArithmeticOperator</code> it is possible to "plug-in" new arithmetic operations 
+to a <a href="http://www.projog.org/javadoc/org/projog/core/kb/KnowledgeBase.html" title="org.projog.core.kb.KnowledgeBase" target="_blank"><code>KnowledgeBase</code></a> instance in order to extend the functionality available to Prolog developers.
+(See <a href="http://www.projog.org/adding-new-prolog-arithmetic-operators.html" target="_blank">Adding New Arithmetic Operators to Prolog</a>.)
+</p>
+<a href="images/ArithmeticOperator.png"><img src="images/ArithmeticOperator.png" class="centeredblock fullwidth" alt="Use of the Strategy pattern by ArithmeticOperator" title="Use of the Strategy pattern by ArithmeticOperator"></a><center style='font-size: 12px; line-height=100%'><b>Use of the Strategy pattern by ArithmeticOperator</b> <i>(Click image to see larger version.)</i></center>
+<p>
+Note from the class diagram above that all implementations of the common arithmetic operations 
+extend <a href="http://www.projog.org/javadoc/org/projog/core/math/AbstractArithmeticOperator.html" title="org.projog.core.math.AbstractArithmeticOperator" target="_blank"><code>AbstractArithmeticOperator</code></a> rather than implementing <code>ArithmeticOperator</code> directly.
+This is so the code for translating between <a href="http://www.projog.org/javadoc/org/projog/core/math/Numeric.html" title="org.projog.core.math.Numeric" target="_blank"><code>Numeric</code></a> objects and Java primitives can be reused.
+(This is an example of the <a href="#template-method" title="Template Method design pattern">Template Method</a> described below.)
+</p>
+
+<h3>Template Method</h3>
+<blockquote>
+<p>Define the skeleton of an algorithm in an operation, deferring some steps to subclasses.
+Template Method lets subclasses redefine certain steps of an algorithm without changing the algorithm's structure.</p>
+</blockquote>
+<p>
+It is common for Prolog developers to define predicates using recursion.
+Although recursive programs can be concise and elegant they do require increased stack space for each iteration - which after many iterations will cause a <code>java.lang.StackOverflowError</code>.
+Where it can determine it is safe to do, Projog converts recursive user defined predicates into iterative versions - requiring a constant stack space regardless of the number of iterations.
+This technique is known as <i>tail recursion optimisation</i> or <i>last call optimisation</i>.
+The algorithm for implementing tail recursion optimisation is encapsulated in <a href="http://www.projog.org/javadoc/org/projog/core/predicate/udp/TailRecursivePredicate.html" title="org.projog.core.predicate.udp.TailRecursivePredicate" target="_blank"><code>TailRecursivePredicate</code></a>.
+Subclasses of <code>TailRecursivePredicate</code> can implement the logic of evaluating the clauses of a specific user defined predicate
+without having to redefine the tail recursion optimisation algorithm.
+</p>
+<img src="images/TailRecursivePredicate.png" class="centeredblock" width="520 height="292" alt="Use of the Template pattern by TailRecursivePredicate" title="Use of the Template pattern by TailRecursivePredicate"><center style='font-size: 12px; line-height=100%'><b>Use of the Template pattern by TailRecursivePredicate</b></center>

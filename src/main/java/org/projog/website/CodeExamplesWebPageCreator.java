@@ -72,9 +72,8 @@ final class CodeExamplesWebPageCreator {
    }
 
    private void generateExample(PrintWriter pw, File scriptFile) throws IOException {
-      try (ProjogTestParser parser = new ProjogTestParser(scriptFile)) {
-         generateExample(pw, parser);
-      }
+      ProjogTestParser parser = new ProjogTestParser(scriptFile);
+      generateExample(pw, parser);
    }
 
    private void generateExample(PrintWriter pw, ProjogTestParser parser) throws IOException {

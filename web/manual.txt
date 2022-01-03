@@ -16,6 +16,11 @@
 [OPERATORS]
 + Prolog Applications
 - applications/towers-of-hanoi.pl
-* calling-prolog-from-java Using Prolog in Java Applications
-* extending-prolog-with-java Adding Extra Functionality to Prolog Using Java
-* adding-new-prolog-arithmetic-operators Adding New Arithmetic Operators to Prolog
++ Integrating Java and Prolog
+- calling-prolog-from-java Using Prolog in Java Applications
+- extending-prolog-with-java Adding Extra Functionality to Prolog Using Java
+- adding-new-prolog-arithmetic-operators Adding New Arithmetic Operators to Prolog
++ Projog Design
+- projog-class-diagrams Class Diagrams
+- projog-design-decisions Design Decisions
+- projog-tests Testing Prolog

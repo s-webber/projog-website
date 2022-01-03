@@ -1,0 +1,140 @@
+<p>
+As well as unit tests, written using the JUnit framework, <a href="http://www.projog.org/" title="Prolog logic programming language for the Java platform">Projog</a> also contains system tests.
+The system tests are written using a Projog-specific markup and are contained in the comments of Prolog code.
+</p>
+<h3>org.projog.test</h3>
+<p>
+The <a href="https://github.com/s-webber/projog-test"><code>projog-test</code></a> GitHub project contains classes for
+parsing Projog's system test file format and running the tests.
+These classes are used for both the system testing and web site documentation generation of the project.
+</p>
+<img src="https://raw.githubusercontent.com/s-webber/projog-test/master/src/main/java/org/projog/test/doc-files/ProjogTestParser.png" width="635 height="441" alt="Structure of the test framework classes." title="Structure of the test framework classes."><br><span style='font-size: 12px; line-height=100%'><b>Structure of the test framework classes.</b></span>
+
+<h3>System Tests File Format</h3>
+
+ <p>
+ System test files contain comments which, using a Projog-specific markup, specify queries and their expected results
+ embedded in standard Prolog code.
+ The system tests provide an efficient, clear and consistent approach to testing that the Projog engine evaluates
+ queries correctly without focusing on <i>how</i> it does it.
+ </p>
+ <p>
+ The system tests are stored in two places:
+ <ol>
+ <li>In text files stored in sub-directories of the project's <a href="https://github.com/s-webber/projog/tree/master/src/test/prolog"><code>src/test/prolog</code></a> directory.</li>
+ <li>
+ Embedded in the comments of the project's Java files alongside the functionality the system tests are intended to test.
+ The system tests are extracted from the Java comments as part of the build process.
+ </li>
+ </ol>
+ </p>
+ <p>
+ The system tests have two purposes:
+ <ol>
+ <li>
+ To confirm that the Projog software works as required by comparing the
+ expected results contained in the system tests against the actual results 
+ generated when evaluating the queries.
+ </li>
+ <li>
+ To produce the examples contained in the web based Projog manual.
+ For example, the <a href="https://raw.githubusercontent.com/s-webber/projog/master/src/main/java/org/projog/core/predicate/builtin/compare/Between.java">Between.java</a> file gets automatically transformed into the <a href="http://www.projog.org/Between.html">Between.html</a> file as part of the build process.
+ </li>
+ </ol>
+ </p>
+ <p>
+ Examples of how system tests can be specified using comments (i.e. lines prefixed with a <code>%</code>) are:
+ <ol>
+ <li>Test that that the query <code>?- test.</code> succeeds once and no attempt will be made to find an alternative solution:
+ <div class="example-content"><div class="code">%TRUE test</div></div>
+ </li>
+ <li>Test that that the query <code>?- test.</code> succeeds once and will fail when an attempt is made to find an alternative solution:
+ <div class="example-content"><div class="code">%TRUE_NO test</div></div>
+ </li>
+ <li>Test that that the query <code>?- test.</code> will fail on the first attempt to evaluate it:
+ <div class="example-content"><div class="code">%FAIL test</div></div>
+ </li>
+ <li>Test that that the query <code>?- test.</code> will succeed three times and there will be no attempt to evaluate it for a fourth time:
+ <div class="example-content"><div class="code">
+ %?- test<br>
+ %YES<br>
+ %YES<br>
+ %YES
+ </div></div>
+ </li>
+ <li>Test that that the query <code>?- test.</code> will succeed three times and will fail when an attempt is made to evaluate it for a fourth time:
+ <div class="example-content"><div class="code">
+ %?- test<br>
+ %YES<br>
+ %YES<br>
+ %YES<br>
+ %NO
+ </div></div>
+ </li>
+ <li>Test that that the query <code>?- test(X).</code> will succeed three times and there will be no attempt to evaluate it for a fourth time, specifying expectations about variable unification:
+ <div class="example-content"><div class="code">
+ %?- test(X)<br>
+ % X=a<br>
+ % X=b<br>
+ % X=c
+ </div></div>
+ The test contains the following expectations about variable unification:
+  <ul>
+   <li>After the first attempt the variable <code>X</code> will be instantiated to <code>a</code>.</li>
+   <li>After the second attempt the variable <code>X</code> will be instantiated to <code>b</code>.</li>
+   <li>After the third attempt the variable <code>X</code> will be instantiated to <code>c</code>.</li>
+  </ul>
+ </li>
+ <li>Test that that the query <code>?- test(X,Y).</code> will succeed three times and will fail when an attempt is made to evaluate it for a fourth time, specifying expectations about variable unification:
+ <div class="example-content"><div class="code">
+ %?- test(X,Y)<br>
+ % X=a<br>
+ % Y=1<br>
+ % X=b<br>
+ % Y=2<br>
+ % X=c<br>
+ % Y=3<br>
+ %NO
+ </div></div>
+ The test contains the following expectations about variable unification:
+  <ul>
+   <li>After the first attempt the variable <code>X</code> will be instantiated to <code>a</code> and the variable <code>Y</code> will be instantiated to <code>1</code>.</li>
+   <li>After the second attempt the variable <code>X</code> will be instantiated to <code>b</code> and the variable <code>Y</code> will be instantiated to <code>2</code>.</li>
+   <li>After the third attempt the variable <code>X</code> will be instantiated to <code>c</code> and the variable <code>Y</code> will be instantiated to <code>3</code>.</li>
+  </ul>
+ </li>
+ <li>Test that that the query <code>?- repeat(3), write('hello world'), nl.</code> will succeed three times and there
+ will be no attempt to evaluate it for a fourth time, specifying expectations about what should be written to standard output:
+ <div class="example-content"><div class="code">
+ %?- repeat(3), write('hello world'), nl<br>
+ %OUTPUT<br>
+ % hello world<br>
+ %<br>
+ %OUTPUT<br>
+ %YES<br>
+ %OUTPUT<br>
+ % hello world<br>
+ %<br>
+ %OUTPUT<br>
+ %YES<br>
+ %OUTPUT<br>
+ % hello world<br>
+ %<br>
+ %OUTPUT<br>
+ %YES
+ </div></div>
+ The test contains expectations that every evaluation will cause the text <code>hello world</code> and a new-line character
+ to be written to the standard output stream.
+ </li>
+ <li>Test that while evaluating the query <code>?- repeat(X).</code> an exception will be thrown with a particular message:
+ <div class="example-content"><div class="code">
+ %?- repeat(X)<br>
+ %ERROR Expected Numeric but got: NAMED_VARIABLE with value: X
+ </div></div>
+ </li>
+ <li>The following would be ignored when running the system tests but would be used
+ when constructing the web based documentation to include a link to <code>test.html</code>:
+ <div class="example-content"><div class="code">%LINK test</div></div>  
+ </li>
+ </ol>
+ </p>

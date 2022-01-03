@@ -3,50 +3,43 @@ body {
 	color: black;
 	font-family: arial, geneva, helvetica, sans-serif;
 	font-size: 95%;
-    margin: 0 auto;
+	margin: 0 auto;
 }
-
-/* top and bottom menu links */
 a.menu:link {
-    color: white;
-    text-decoration: none;
+	color: white;
+	text-decoration: none;
 }
 a.menu:visited {
-    color: white;
-    text-decoration: none;
+	color: white;
+	text-decoration: none;
 }
 a.menu:hover {
-    color: yellow;
-    text-decoration: underline;
+	color: yellow;
+	text-decoration: underline;
 }
 a.menu:active {
-    color: yellow;
-    text-decoration: underline;
+	color: yellow;
+	text-decoration: underline;
 }
-
-/* Top menu */
 div.top{background-color:black;color: white;border: 1px solid black; padding: 5px;}
 a.pjmenu{font-weight: bold;}
 a.topmenu{display: block;width: 140px; test-align: right}
 ul.menu {
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
-    overflow: hidden;
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+	overflow: hidden;
 }
 li.menu {
-    float: left;
+	float: left;
 }
 .left{
-    float: left;
+	float: left;
 }
 .right {
-    float: right;
-    text-align: center;
+	float: right;
+	text-align: center;
 }
-
-
-
 li {
 	margin-bottom: 0.5em;
 }
@@ -114,4 +107,7 @@ span.footer {
 	width: 100%;
 	text-align: center;
 	font-size: 80%;
+}
+img {
+	border: 1px solid #000000;
 }

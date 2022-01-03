@@ -1,0 +1,123 @@
+<p>
+Below are a series of class diagrams describing the architecture of the <a href="http://www.projog.org/" title="Prolog logic programming language for the Java platform">Projog</a> project.
+The diagrams start with implementations of <a href="http://www.projog.org/javadoc/org/projog/core/term/Term.html" title="org.projog.core.term.Term"><code>Term</code></a>, the low-level building blocks used to construct Prolog clauses,
+and finishes with <a href="http://www.projog.org/javadoc/org/projog/tools/ProjogConsole.html" title="org.projog.tools.ProjogConsole"><code>ProjogConsole</code></a>, the console based application.
+</p>
+
+<h3>Terms</h3>
+<p>
+Terms are the building blocks used to construct Prolog programs and queries.
+</p>
+<img src="https://raw.githubusercontent.com/s-webber/projog/master/src/main/java/org/projog/core/term/doc-files/Term.png" width="492 height="395" alt="Implementations of the Term interface." title="Implementations of the Term interface."><br><span style='font-size: 12px; line-height=100%'><b>Implementations of the Term interface.</b></span>
+<p>
+<ul>
+<li><a href="http://www.projog.org/javadoc/org/projog/core/term/Atom.html" title="org.projog.core.term.Atom"><code>Atom</code></a> - Atoms are constant; their values cannot be changed after they are created. Atoms have no arguments.</li>
+<li><a href="http://www.projog.org/javadoc/org/projog/core/term/Structure.html" title="org.projog.core.term.Structure"><code>Structure</code></a> - Compound terms are represented in Projog by the <a href="http://www.projog.org/javadoc/org/projog/core/term/Structure.html" title="org.projog.core.term.Structure"><code>Structure</code></a> implementation of the <a href="http://www.projog.org/javadoc/org/projog/core/term/Term.html" title="org.projog.core.term.Term"><code>Term</code></a> interface.
+<a href="http://www.projog.org/javadoc/org/projog/core/term/Structure.html" title="org.projog.core.term.Structure"><code>Structure</code></a> objects consist of other <a href="http://www.projog.org/javadoc/org/projog/core/term/Term.html" title="org.projog.core.term.Term"><code>Term</code></a> objects representing the compound term's arguments.
+As an argument of a <a href="http://www.projog.org/javadoc/org/projog/core/term/Structure.html" title="org.projog.core.term.Structure"><code>Structure</code></a> can be another <a href="http://www.projog.org/javadoc/org/projog/core/term/Structure.html" title="org.projog.core.term.Structure"><code>Structure</code></a> it is possible to use it to represent complex tree data structures.
+(Example of the "composite" design pattern.)</li>
+<li><a href="http://www.projog.org/javadoc/org/projog/core/term/List.html" title="org.projog.core.term.List"><code>List</code></a> - Represents Prolog lists - a specific type of compound term that has two arguments (a head and a tail).</li>
+<li><a href="http://www.projog.org/javadoc/org/projog/core/term/EmptyList.html" title="org.projog.core.term.EmptyList"><code>EmptyList</code></a> - Represents a list that contains no elements.</li>
+<li><a href="http://www.projog.org/javadoc/org/projog/core/term/Variable.html" title="org.projog.core.term.Variable"><code>Variable</code></a> - Has a <a href="http://www.projog.org/javadoc/org/projog/core/term/Term.html" title="org.projog.core.term.Term"><code>Term</code></a> 
+member variable which provides a reference to the value the <a href="http://www.projog.org/javadoc/org/projog/core/term/Variable.html" title="org.projog.core.term.Variable"><code>Variable</code></a> is currently instantiated to.
+When a <a href="http://www.projog.org/javadoc/org/projog/core/term/Variable.html" title="org.projog.core.term.Variable"><code>Variable</code></a> is instantiated to another <a href="http://www.projog.org/javadoc/org/projog/core/term/Term.html" title="org.projog.core.term.Term"><code>Term</code></a> it delegates any method calls to it.
+To client code, a <a href="http://www.projog.org/javadoc/org/projog/core/term/Variable.html" title="org.projog.core.term.Variable"><code>Variable</code></a> behaves just like the <a href="http://www.projog.org/javadoc/org/projog/core/term/Term.html" title="org.projog.core.term.Term"><code>Term</code></a> it is currently instantiated to.
+Over its lifetime a <a href="http://www.projog.org/javadoc/org/projog/core/term/Variable.html" title="org.projog.core.term.Variable"><code>Variable</code></a> can be instantiated to a number of other <a href="http://www.projog.org/javadoc/org/projog/core/term/Term.html" title="org.projog.core.term.Term"><code>Term</code></a> instances. (Example of the "state" design pattern.)</li>
+<li><a href="http://www.projog.org/javadoc/org/projog/core/math/Numeric.html" title="org.projog.core.math.Numeric"><code>Numeric</code></a> - Projog provides two number types - <a href="http://www.projog.org/javadoc/org/projog/core/term/IntegerNumber.html" title="org.projog.core.term.IntegerNumber"><code>IntegerNumber</code></a> and <a href="http://www.projog.org/javadoc/org/projog/core/term/DecimalFraction.html" title="org.projog.core.term.DecimalFraction"><code>DecimalFraction</code></a> both of which implement the <a href="http://www.projog.org/javadoc/org/projog/core/math/Numeric.html" title="org.projog.core.math.Numeric"><code>Numeric</code></a> interface.
+The <a href="http://www.projog.org/javadoc/org/projog/core/term/IntegerNumber.html" title="org.projog.core.term.IntegerNumber"><code>IntegerNumber</code></a> class represents numbers using a <code>long</code> primitive 
+and the <a href="http://www.projog.org/javadoc/org/projog/core/term/DecimalFraction.html" title="org.projog.core.term.DecimalFraction"><code>DecimalFraction</code></a> class represents numbers using a <code>double</code> primitive.
+</ul>
+</p>
+
+<h3>Prolog Syntax Parser</h3>
+<p>
+<a href="http://www.projog.org/javadoc/org/projog/core/parser/ProjogSourceReader.html" title="org.projog.core.parser.ProjogSourceReader"><code>ProjogSourceReader</code></a> populates a <a href="http://www.projog.org/javadoc/org/projog/core/kb/KnowledgeBase.html" title="org.projog.core.kb.KnowledgeBase"><code>KnowledgeBase</code></a> with clauses 
+constructed by a <a href="http://www.projog.org/javadoc/org/projog/core/parser/SentenceParser.html" title="org.projog.core.parser.SentenceParser"><code>SentenceParser</code></a> from Prolog syntax contained in a text file.
+</p><p>
+<a href="http://www.projog.org/javadoc/org/projog/core/parser/SentenceParser.html" title="org.projog.core.parser.SentenceParser"><code>SentenceParser</code></a> transforms Prolog syntax into <a href="http://www.projog.org/javadoc/org/projog/core/term/Term.html" title="org.projog.core.term.Term"><code>Term</code></a> objects.
+<a href="http://www.projog.org/javadoc/org/projog/core/parser/SentenceParser.html" title="org.projog.core.parser.SentenceParser"><code>SentenceParser</code></a> can parse pre-, post- and in-fix operands e.g. "<code>p([X|Y], Z) :- Z < X+1, p(Y, X).</code>".
+<a href="http://www.projog.org/javadoc/org/projog/core/parser/SentenceParser.html" title="org.projog.core.parser.SentenceParser"><code>SentenceParser</code></a> uses <code>TokenParser</code> to retrieve <code>Token</code> objects representing individual numbers, predicate names and seperators, etc.
+<code>TokenParser</code> constructs the <code>Token</code> objects from characters read from <code>CharacterParser</code>.
+</p><p>
+<code>CharacterParser</code> uses a <code>java.io.BufferedReader</code> to read characters from a stream.
+<code>CharacterParser</code> keeps track of the current line and column number being parsed -
+this is useful for producing descriptive messages when an error occurs during parsing.
+Errors are propagated up using a <a href="http://www.projog.org/javadoc/org/projog/core/parser/ParserException.html" title="org.projog.core.parser.ParserException"><code>ParserException</code></a> - which takes a <code>CharacterParser</code> as a constructor argument.
+</p>
+<img src="https://raw.githubusercontent.com/s-webber/projog/master/src/main/java/org/projog/core/parser/doc-files/ProjogSourceReader.png" width="539 height="622" alt="Structure of the classes used to parse Prolog code." title="Structure of the classes used to parse Prolog code."><br><span style='font-size: 12px; line-height=100%'><b>Structure of the classes used to parse Prolog code.</b></span>
+
+<h3>Built-in Predicates</h3>
+<p>
+Projog provides a number of <a href="http://www.projog.org/prolog-predicates.html">built-in predicates</a>.
+Built-in predicates are functionality that is implemented in Java rather than constructed from Prolog code.
+Built-in predicates make it possible to provide a convenient and efficient way of doing standard tasks - 
+including functionality that is not possible using only pure Prolog syntax.
+New built-in predicates can be easily developed by Java developers and "plugged-in" to Projog - obeying the open/closed principle.
+See <a href="http://www.projog.org/extending-prolog-with-java.html">Adding Extra Functionality to Prolog Using Java</a>.
+</p>
+<p>
+A <a href="https://raw.githubusercontent.com/s-webber/projog/master/src/main/resources/projog-bootstrap.pl">projog-bootstrap.pl</a> file, 
+containing Prolog syntax, is used to initialise new Projog instances.
+This mechanism promotes flexibility as the configuration of built-in predicates can be controlled without altering any Java code.
+</p>
+
+<h3>User Defined Predicates</h3>
+<p>
+User defined predicates are generated at runtime as a result of parsing Prolog code.
+User defined predicates can be static or dynamic.
+Unlike static predicates, dynamic predicates can have clauses added or removed after they are first defined.
+</p>
+<p>
+<a href="http://www.projog.org/javadoc/org/projog/core/predicate/udp/DynamicUserDefinedPredicateFactory.html" title="org.projog.core.predicate.udp.DynamicUserDefinedPredicateFactory"><code>DynamicUserDefinedPredicateFactory</code></a> is used to represent dynamic perdicates.
+<a href="http://www.projog.org/javadoc/org/projog/core/predicate/udp/StaticUserDefinedPredicateFactory.html" title="org.projog.core.predicate.udp.StaticUserDefinedPredicateFactory"><code>StaticUserDefinedPredicateFactory</code></a> is used to represent static perdicates.
+For performance reasons <a href="http://www.projog.org/javadoc/org/projog/core/predicate/udp/StaticUserDefinedPredicateFactory.html" title="org.projog.core.predicate.udp.StaticUserDefinedPredicateFactory"><code>StaticUserDefinedPredicateFactory</code></a> delegates to specialised implementations of <a href="http://www.projog.org/javadoc/org/projog/core/predicate/PredicateFactory.html" title="org.projog.core.predicate.PredicateFactory"><code>PredicateFactory</code></a>.
+If a user-defined predicate is suitable for <a href="https://en.wikipedia.org/wiki/Prolog#Term_indexing">term indexing</a> (a similar concept to indexing of relational detabases) then <code>IndexablePredicateFactory</code> is used.
+If a user-defined predicate is <a href="https://en.wikipedia.org/wiki/Tail_call">tail-recursive</a> then <code>InterpretedTailRecursivePredicate</code> is used.
+</p>
+<img src="https://raw.githubusercontent.com/s-webber/projog/master/src/main/java/org/projog/core/predicate/udp/doc-files/UserDefinedPredicateFactory.png" width="838 height="327" alt="Implementations of the UserDefinedPredicateFactory interface." title="Implementations of the UserDefinedPredicateFactory interface."><br><span style='font-size: 12px; line-height=100%'><b>Implementations of the UserDefinedPredicateFactory interface.</b></span>
+
+<h3>Arithmetic Operators</h3>
+<p>
+Projog supports the common arithmetic operations.
+As with built-in predicates, new arithmetic operations can be easily developed by Java developers and "plugged-in" to Projog.
+See <a href="http://www.projog.org/adding-new-prolog-arithmetic-operators.html">Adding New Arithmetic Operators to Prolog</a>.
+</p>
+<a href="https://raw.githubusercontent.com/s-webber/projog/master/src/main/java/org/projog/core/math/doc-files/ArithmeticOperator.png"><img src="https://raw.githubusercontent.com/s-webber/projog/master/src/main/java/org/projog/core/math/doc-files/ArithmeticOperator.png" width="881 height="349" alt="Implementations of the ArithmeticOperator interface." title="Implementations of the ArithmeticOperator interface."></a><br><span style='font-size: 12px; line-height=100%'><b>Implementations of the ArithmeticOperator interface.</b> <i>(Click image to see larger version.)</i></span>
+
+<h3>Knowledge Base</h3>
+<p>
+<a href="http://www.projog.org/javadoc/org/projog/core/kb/KnowledgeBase.html" title="org.projog.core.kb.KnowledgeBase"><code>KnowledgeBase</code></a> is the central object that connects the various components of an instance of the "core" inference engine.
+</p>
+<a href="https://raw.githubusercontent.com/s-webber/projog/master/src/main/java/org/projog/core/kb/doc-files/KnowledgeBase.png"><img src="https://raw.githubusercontent.com/s-webber/projog/master/src/main/java/org/projog/core/kb/doc-files/KnowledgeBase.png" width="783 height="354" alt="The KnowledgeBase class and the components it is associated with." title="The KnowledgeBase class and the components it is associated with."></a><br><span style='font-size: 12px; line-height=100%'><b>The KnowledgeBase class and the components it is associated with.</b> <i>(Click image to see larger version.)</i></span>
+<p>
+<ul>
+<li><a href="http://www.projog.org/javadoc/org/projog/core/predicate/Predicates.html" title="org.projog.core.predicate.Predicates"><code>Predicates</code></a> - A repository of user defined predicates (specified using Prolog syntax) and built-in predicates (implemented in Java).</li>
+<li><a href="http://www.projog.org/javadoc/org/projog/core/math/ArithmeticOperators.html" title="org.projog.core.math.ArithmeticOperators"><code>ArithmeticOperators</code></a> - A repository of arithmetic operators.</li>
+<li><a href="http://www.projog.org/javadoc/org/projog/core/io/FileHandles.html" title="org.projog.core.io.FileHandles"><code>FileHandles</code></a> - A repository of file handles used by predicates for <a href="http://www.projog.org/prolog-io.html">reading and writing to files</a>.</li>
+<li><a href="http://www.projog.org/javadoc/org/projog/core/event/ProjogListeners.html" title="org.projog.core.event.ProjogListeners"><code>ProjogListeners</code></a> - A repository of <a href="http://www.projog.org/javadoc/org/projog/core/event/ProjogListener.html" title="org.projog.core.event.ProjogListener"><code>ProjogListener</code></a> objects that clients can register to recieve notifications of events.</li>
+<li><a href="http://www.projog.org/javadoc/org/projog/core/event/SpyPoints.html" title="org.projog.core.event.SpyPoints"><code>SpyPoints</code></a> - A repository of <code>SpyPoint</code> objects. Supports the <a href="http://www.projog.org/prolog-debugging.html">debugging of Prolog queries</a>.</li>
+<li><a href="http://www.projog.org/javadoc/org/projog/core/term/TermFormatter.html" title="org.projog.core.term.TermFormatter"><code>TermFormatter</code></a> - Used to produce <code>String</code> representations of <a href="http://www.projog.org/javadoc/org/projog/core/term/Term.html" title="org.projog.core.term.Term"><code>Term</code></a> instances.</li>
+<li><a href="http://www.projog.org/javadoc/org/projog/core/parser/Operands.html" title="org.projog.core.parser.Operands"><code>Operands</code></a> - A repository of operators used in the parsing and formatting of Prolog syntax. Prolog allows functors (names of predicates) to be defined as "operators". The use of operators allows syntax to be easier to read.</li>
+<li><a href="http://www.projog.org/javadoc/org/projog/core/kb/ProjogProperties.html" title="org.projog.core.kb.ProjogProperties"><code>ProjogProperties</code></a> - Used for configuration. Currently only used to provide the location of the bootstrap file.</li>
+</ul>
+</p>
+
+<h3>Java API to Prolog inference engine</h3>
+<p>
+The <a href="http://www.projog.org/javadoc/org/projog/api/Projog.html" title="org.projog.api.Projog"><code>Projog</code></a> class provides a single high-level entry point for Java applications to interface with an instance of a Prolog inference engine.
+By shielding client code from the low-level implementation of the "core" inference engine <a href="http://www.projog.org/javadoc/org/projog/api/Projog.html" title="org.projog.api.Projog"><code>Projog</code></a> reduces coupling and makes the subsystem easier to use.
+(Example of the "facade" design pattern.)
+</p>
+<p>The mechanism for evaluting Prolog queries is similar to Java's JDBC API used to query relational databases.
+<a href="http://www.projog.org/javadoc/org/projog/api/QueryStatement.html" title="org.projog.api.QueryStatement"><code>QueryStatement</code></a> is similar to <code>java.sql.PreparedStatement</code>. 
+<a href="http://www.projog.org/javadoc/org/projog/api/QueryResult.html" title="org.projog.api.QueryResult"><code>QueryResult</code></a> is similar to <code>java.sql.ResultSet</code>.
+See <a href="http://www.projog.org/calling-prolog-from-java.html">Using Prolog in Java Applications</a>.</p>
+<img src="https://raw.githubusercontent.com/s-webber/projog/master/src/main/java/org/projog/api/doc-files/Projog.png" width="662 height="1258" alt="The Projog API for calling Prolog from Java." title="The Projog API for calling Prolog from Java."><br><span style='font-size: 12px; line-height=100%'><b>The Projog API for calling Prolog from Java.</b></span>
+
+<h3>Console Application</h3>
+<p>
+The <a href="http://www.projog.org/javadoc/org/projog/tools/ProjogConsole.html" title="org.projog.tools.ProjogConsole"><code>ProjogConsole</code></a> application allows Prolog developers to interact with the inference engine via a read-evaluate-print loop (REPL). 
+<a href="http://www.projog.org/javadoc/org/projog/tools/ProjogConsole.html" title="org.projog.tools.ProjogConsole"><code>ProjogConsole</code></a> uses a <a href="http://www.projog.org/javadoc/org/projog/api/Projog.html" title="org.projog.api.Projog"><code>Projog</code></a> instance as a facade to the "core" inference engine.
+<a href="http://www.projog.org/javadoc/org/projog/tools/ProjogConsole.html" title="org.projog.tools.ProjogConsole"><code>ProjogConsole</code></a> registers a <a href="http://www.projog.org/javadoc/org/projog/core/event/LoggingProjogListener.html" title="org.projog.core.event.LoggingProjogListener"><code>LoggingProjogListener</code></a> so it can receive <code>SpyPointEvent</code> objects in order to provide feedback to the user.
+</p>
+<img src="https://raw.githubusercontent.com/s-webber/projog/master/src/main/java/org/projog/tools/doc-files/ProjogConsole.png" width="333 height="418" alt="Structure of the console based application." title="Structure of the console based application."><br><span style='font-size: 12px; line-height=100%'><b>Structure of the console based application.</b></span>

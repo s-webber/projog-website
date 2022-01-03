@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <project name="projog" default="release-website">
-	<property name="version" value="0.4.0" />
+	<property name="version" value="0.5.0" />
 	<property name="release-dir" value="projog-${version}"/>
 	<property name="javac-target" value="1.8"/>
 	<property name="maven-url" value="http://search.maven.org/remotecontent?filepath="/>
@@ -14,9 +14,9 @@
 	<property name="hamcrest-url" value="${maven-url}org/hamcrest/hamcrest-core/${hamcrest-version}/hamcrest-core-${hamcrest-version}.jar"/>
 
 	<property name="projog-core-dir" value="../projog"/>
-	<property name="projog-core-jar" value="${projog-core-dir}/target/projog-core-0.4.0.jar"/>
-	<property name="projog-test-jar" value="lib/projog-test-0.4.0.jar"/>
-	<property name="projog-test-url" value="${maven-url}org/projog/projog-test/0.4.0/projog-test-0.4.0.jar"/>
+	<property name="projog-core-jar" value="${projog-core-dir}/target/projog-core-0.5.0.jar"/>
+	<property name="projog-test-jar" value="lib/projog-test-0.5.0.jar"/>
+	<property name="projog-test-url" value="${maven-url}org/projog/projog-test/0.5.0/projog-test-0.5.0.jar"/>
 
 	<tstamp>
 		<format property="filename.timestamp" pattern="yyyyMMddHHmm"/>
