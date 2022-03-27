@@ -73,7 +73,7 @@ For example, as part of testing Projog against the solutions provided for <a hre
 <p>
 Projog supports interoperation between itself and Java.
 Projog can be used to run Prolog code from Java.
-Java can be used to extend the functionality Projog that makes available from Prolog code.
+Java can be used to extend the functionality Projog makes available from Prolog code.
 </p>
 <p>
 The <a href="http://www.projog.org/javadoc/org/projog/api/Projog.html" title="org.projog.api.Projog"><code>Projog</code></a> class provides a convenient API for interacting with Projog from Java.
@@ -83,7 +83,7 @@ The Projog API is <a href="http://www.projog.org/calling-prolog-from-java.html">
 The approach for using Java to add new predicates is <a href="http://www.projog.org/extending-prolog-with-java.html">documented</a>, proven (it is the same mechanism used to add the existing functionality provided by Projog) and allows Projog to be extendable without the need for modification.
 The addition of new functionality to Projog is aided by:
 <ul>
-<li>A <a href="test-framework.html">system test framework</a> that was specifically created to support the documentation generation and unit testing of all predicates as part of an automated build process.</li>
+<li>A <a href="test-framework.html">test framework</a> that was specifically created to support the documentation generation and unit testing of all predicates as part of an automated build process.</li>
 <li>A powerful and concise mechanism for <a href="https://raw.githubusercontent.com/s-webber/projog/master/src/main/resources/projog-bootstrap.pl">configuration</a>.
 </ul>
 </p>
@@ -142,7 +142,7 @@ PlantUML allows diagrams to be expressed in a textual form which, compared to us
 </p>
 <p>
 The Javadoc comments and system tests are used to automatically generate the website's documentation of built-in predicates.
-For example, the <a href="https://raw.githubusercontent.com/s-webber/projog/master/src/main/java/org/projog/core/function/compare/Between.java">Between.java</a> file gets automatically transformed into the <a href="http://www.projog.org/Between.html">Between.html</a> file as part of the build process.
+For example, the <a href="https://raw.githubusercontent.com/s-webber/projog/master/src/main/java/org/projog/core/predicate/builtin/compare/Between.java">Between.java</a> file gets automatically transformed into the <a href="http://www.projog.org/Between.html">Between.html</a> file as part of the build process.
 The use of Javadoc comments and system tests, rather than maintaining a seperate set of documentation, promotes consistency and saves time.
 As the documentation contains the actual output of running the system tests then we can have confidence the documentation provides a correct account of how the code works. 
 </p>

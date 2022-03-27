@@ -1,3 +1,5 @@
+<h2>Class Diagrams</h2>
+
 <p>
 Below are a series of class diagrams describing the architecture of the <a href="http://www.projog.org/" title="Prolog logic programming language for the Java platform">Projog</a> project.
 The diagrams start with implementations of <a href="http://www.projog.org/javadoc/org/projog/core/term/Term.html" title="org.projog.core.term.Term"><code>Term</code></a>, the low-level building blocks used to construct Prolog clauses,
@@ -82,13 +84,13 @@ Projog supports the common arithmetic operations.
 As with built-in predicates, new arithmetic operations can be easily developed by Java developers and "plugged-in" to Projog.
 See <a href="http://www.projog.org/adding-new-prolog-arithmetic-operators.html">Adding New Arithmetic Operators to Prolog</a>.
 </p>
-<a href="https://raw.githubusercontent.com/s-webber/projog/master/src/main/java/org/projog/core/math/doc-files/ArithmeticOperator.png"><img src="https://raw.githubusercontent.com/s-webber/projog/master/src/main/java/org/projog/core/math/doc-files/ArithmeticOperator.png" width="881 height="349" alt="Implementations of the ArithmeticOperator interface." title="Implementations of the ArithmeticOperator interface."></a><br><span style='font-size: 12px; line-height=100%'><b>Implementations of the ArithmeticOperator interface.</b> <i>(Click image to see larger version.)</i></span>
+<img src="https://raw.githubusercontent.com/s-webber/projog/master/src/main/java/org/projog/core/math/doc-files/ArithmeticOperator.png" width="881 height="349" alt="Implementations of the ArithmeticOperator interface." title="Implementations of the ArithmeticOperator interface."><br><span style='font-size: 12px; line-height=100%'><b>Implementations of the ArithmeticOperator interface.</b></span>
 
 <h3>Knowledge Base</h3>
 <p>
 <a href="http://www.projog.org/javadoc/org/projog/core/kb/KnowledgeBase.html" title="org.projog.core.kb.KnowledgeBase"><code>KnowledgeBase</code></a> is the central object that connects the various components of an instance of the "core" inference engine.
 </p>
-<a href="https://raw.githubusercontent.com/s-webber/projog/master/src/main/java/org/projog/core/kb/doc-files/KnowledgeBase.png"><img src="https://raw.githubusercontent.com/s-webber/projog/master/src/main/java/org/projog/core/kb/doc-files/KnowledgeBase.png" width="783 height="354" alt="The KnowledgeBase class and the components it is associated with." title="The KnowledgeBase class and the components it is associated with."></a><br><span style='font-size: 12px; line-height=100%'><b>The KnowledgeBase class and the components it is associated with.</b> <i>(Click image to see larger version.)</i></span>
+<img src="https://raw.githubusercontent.com/s-webber/projog/master/src/main/java/org/projog/core/kb/doc-files/KnowledgeBase.png" width="783 height="354" alt="The KnowledgeBase class and the components it is associated with." title="The KnowledgeBase class and the components it is associated with."><br><span style='font-size: 12px; line-height=100%'><b>The KnowledgeBase class and the components it is associated with.</b></span>
 <p>
 <ul>
 <li><a href="http://www.projog.org/javadoc/org/projog/core/predicate/Predicates.html" title="org.projog.core.predicate.Predicates"><code>Predicates</code></a> - A repository of user defined predicates (specified using Prolog syntax) and built-in predicates (implemented in Java).</li>
