@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <project name="projog" default="release-website">
-	<property name="version" value="0.6.0" />
+	<property name="version" value="0.7.0" />
 	<property name="release-dir" value="projog-${version}"/>
 	<property name="javac-target" value="1.8"/>
 	<property name="maven-url" value="http://search.maven.org/remotecontent?filepath="/>
@@ -16,7 +16,7 @@
 	<property name="projog-core-dir" value="../projog"/>
 	<property name="projog-core-jar" value="${projog-core-dir}/target/projog-core-${version}.jar"/>
 	<property name="projog-clp-dir" value="../projog-clp"/>
-	<property name="projog-clp-jar" value="projog-clp-0.1.0.jar"/>
+	<property name="projog-clp-jar" value="projog-clp-0.2.0.jar"/>
 	<property name="projog-test-jar" value="lib/projog-test-0.5.0.jar"/>
 	<property name="projog-test-url" value="${maven-url}org/projog/projog-test/0.5.0/projog-test-0.5.0.jar"/>
 
@@ -47,6 +47,7 @@
 		<path id="classpath.compile.build-utils">
 			<pathelement location="${projog-core-jar}"/>
 			<pathelement location="${projog-test-jar}"/>
+			<pathelement location="${projog-clp-dir}/target/${projog-clp-jar}"/>
 		</path>
 		<javac srcdir="src/main/java" destdir="build/classes/build-utils" debug="on" includeantruntime="false" source="${javac-target}" target="${javac-target}">
 			<compilerarg value="-Xlint:-options"/>
@@ -60,6 +61,7 @@
 			<pathelement location="${junit-jar}"/>
 			<pathelement location="${projog-core-jar}"/>
 			<pathelement location="${projog-test-jar}"/>
+			<pathelement location="${projog-clp-dir}/target/${projog-clp-jar}"/>
 			<pathelement location="build/classes/build-utils"/>
 		</path>
 		<javac srcdir="src/test/java" destdir="build/classes/build-utils-tests" debug="on" includeantruntime="false" source="${javac-target}" target="${javac-target}">
@@ -78,6 +80,7 @@
 			<classpath location="${hamcrest-jar}"/>
 			<classpath location="${projog-core-jar}"/>
 			<classpath location="${projog-test-jar}"/>
+			<classpath location="${projog-clp-dir}/target/${projog-clp-jar}"/>
 			<classpath location="build/classes/build-utils"/>
 			<classpath location="build/classes/build-utils-tests"/>
 			<batchtest fork="yes" todir=".">
@@ -106,6 +109,7 @@
 			<classpath>
 				<pathelement location="${projog-core-jar}"/>
 				<pathelement location="${projog-test-jar}"/>
+				<pathelement location="${projog-clp-dir}/target/${projog-clp-jar}"/>
 				<pathelement location="build/classes/build-utils"/>
 				<pathelement location="build/classes/core-tests"/>
 			</classpath>

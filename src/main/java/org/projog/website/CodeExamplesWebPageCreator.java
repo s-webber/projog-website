@@ -72,13 +72,24 @@ final class CodeExamplesWebPageCreator {
    }
 
    private void generateExample(PrintWriter pw, File scriptFile) throws IOException {
+      String title = countQueries(scriptFile) == 1 ? "Example" : "Examples";
+      pw.println("<h3>" + title + "</h3><div class=\"example-content\">" + LINE_BREAK);
+      generateExample(pw, new ProjogTestParser(scriptFile));
+   }
+
+   private int countQueries(File scriptFile) throws IOException {
       ProjogTestParser parser = new ProjogTestParser(scriptFile);
-      generateExample(pw, parser);
+      ProjogTestContent content;
+      int ctr = 0;
+      while ((content = parser.getNext()) != null) {
+         if (content instanceof ProjogTestQuery) {
+            ctr++;
+         }
+      }
+      return ctr;
    }
 
    private void generateExample(PrintWriter pw, ProjogTestParser parser) throws IOException {
-      pw.println("<h3>Examples</h3><div class=\"example-content\">" + LINE_BREAK);
-
       boolean inCodeSection = false;
       boolean inQuerySection = false;
       boolean lastLineWasBlank = false;

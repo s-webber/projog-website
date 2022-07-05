@@ -23,7 +23,7 @@ a.menu:active {
 }
 div.top{background-color:black;color: white;border: 1px solid black; padding: 5px;}
 a.pjmenu{font-weight: bold;}
-a.topmenu{display: block;width: 140px; test-align: right}
+a.topmenu{display: block;width: 140px; text-align: right}
 ul.menu {
 	list-style-type: none;
 	margin: 0;
