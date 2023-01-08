@@ -19,6 +19,7 @@
 - applications/multiple-choice-question.pl
 - applications/cryptarithmetic.pl
 - applications/eight-queens.pl
+- applications/full-adder.pl
 - applications/towers-of-hanoi.pl
 + Integrating Java and Prolog
 - calling-prolog-from-java Using Prolog in Java Applications

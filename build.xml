@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <project name="projog" default="release-website">
-	<property name="version" value="0.7.0" />
+	<property name="version" value="0.8.0" />
 	<property name="release-dir" value="projog-${version}"/>
 	<property name="javac-target" value="1.8"/>
 	<property name="maven-url" value="http://search.maven.org/remotecontent?filepath="/>
@@ -16,7 +16,7 @@
 	<property name="projog-core-dir" value="../projog"/>
 	<property name="projog-core-jar" value="${projog-core-dir}/target/projog-core-${version}.jar"/>
 	<property name="projog-clp-dir" value="../projog-clp"/>
-	<property name="projog-clp-jar" value="projog-clp-0.2.0.jar"/>
+	<property name="projog-clp-jar" value="projog-clp-0.3.0.jar"/>
 	<property name="projog-test-jar" value="lib/projog-test-0.5.0.jar"/>
 	<property name="projog-test-url" value="${maven-url}org/projog/projog-test/0.5.0/projog-test-0.5.0.jar"/>
 
