@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <project name="projog" default="release-website">
-	<property name="version" value="0.8.0" />
+	<property name="version" value="0.9.0" />
 	<property name="release-dir" value="projog-${version}"/>
 	<property name="javac-target" value="1.8"/>
 	<property name="maven-url" value="http://search.maven.org/remotecontent?filepath="/>
