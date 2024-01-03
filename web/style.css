@@ -21,9 +21,9 @@ a.menu:active {
 	color: yellow;
 	text-decoration: underline;
 }
-div.top{background-color:black;color: white;border: 1px solid black; padding: 5px;}
+div.top{background-color:black;color: white;border: 1px solid black; padding: 2px 5px;}
 a.pjmenu{font-weight: bold;}
-a.topmenu{display: block;width: 140px; text-align: right}
+a.topmenu{display: block; padding: 0px 10px; text-align: right}
 ul.menu {
 	list-style-type: none;
 	margin: 0;
@@ -78,11 +78,11 @@ div.next {
 	width: 48%;
 }
 div.section-content {
-	padding-right: 1em; 
+	padding-right: 1em;
 	padding-left: 1em
 }
 div.example-content {
-	padding-right: 2em; 
+	padding-right: 2em;
 	padding-left: 2em;
 	line-height: 100%;
 }
@@ -103,10 +103,10 @@ span.output {
 }
 span.comment {
 }
-span.footer {
+div.footer {
 	width: 100%;
 	text-align: center;
-	font-size: 80%;
+	font-size: 95%;
 }
 img {
 	border: 1px solid #000000;

@@ -44,28 +44,26 @@ public class CalculatableExample implements ArithmeticOperator {<br>
 Example of integrating <code>com.example.ArithmeticOperatorExample</code> into Projog:
 </p>
 
-<div class="code">
-<pre>
-?- pj_add_arithmetic_operator(triple/1, 'com.example.ArithmeticOperatorExample').
-
+<div class="code"><code>
+?- pj_add_arithmetic_operator(triple/1, 'com.example.ArithmeticOperatorExample').<br>
+<br>
+yes<br>
+<br>
+?- X is triple(3).<br>
+X = 9<br>
+<br>
+yes<br>
+<br>
+?- X is round(147).<br>
+X = 441<br>
+<br>
+yes<br>
+<br>
+?- X is round(-42.5).<br>
+X = 127.5<br>
+<br>
 yes
-
-?- X is triple(3).
-X = 9
-
-yes
-
-?- X is round(147).
-X = 441
-
-yes
-
-?- X is round(-42.5).
-X = 127.5
-
-yes
-</pre>
-</div>
+</code></div>
 
 <h3>See Also</h3>
 <ul>

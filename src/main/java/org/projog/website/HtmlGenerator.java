@@ -15,11 +15,12 @@
  */
 package org.projog.website;
 
-import static org.projog.website.WebsiteUtils.DOCS_OUTPUT_DIR;
-import static org.projog.website.WebsiteUtils.FOOTER_HTML;
-import static org.projog.website.WebsiteUtils.EXTRACTED_PREDICATE_TESTS_DIR;
-import static org.projog.website.WebsiteUtils.EXTRACTED_OPERATOR_TESTS_DIR;
+import static org.projog.website.BuiltInPredicatesIndexPage.produceBuiltInPredicatesIndexPage;
 import static org.projog.website.WebsiteUtils.BUILTIN_PREDICATES_PACKAGE_DIR;
+import static org.projog.website.WebsiteUtils.DOCS_OUTPUT_DIR;
+import static org.projog.website.WebsiteUtils.EXTRACTED_OPERATOR_TESTS_DIR;
+import static org.projog.website.WebsiteUtils.EXTRACTED_PREDICATE_TESTS_DIR;
+import static org.projog.website.WebsiteUtils.FOOTER_HTML;
 import static org.projog.website.WebsiteUtils.HEADER_HTML;
 import static org.projog.website.WebsiteUtils.LINE_BREAK;
 import static org.projog.website.WebsiteUtils.MANUAL_HTML;
@@ -28,7 +29,6 @@ import static org.projog.website.WebsiteUtils.SOURCE_INPUT_DIR_NAME;
 import static org.projog.website.WebsiteUtils.STATIC_PAGES_LIST;
 import static org.projog.website.WebsiteUtils.WEB_SRC_DIR;
 import static org.projog.website.WebsiteUtils.readAllLines;
-import static org.projog.website.BuiltInPredicatesIndexPage.produceBuiltInPredicatesIndexPage;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -248,15 +248,35 @@ public final class HtmlGenerator {
    }
 
    private static void addHeadersAndFooters(String filename, String title, CharSequence content) {
+      String html = compactHtml(HEADER_BEFORE_TITLE + removeHtmlMarkup(title) + HEADER_AFTER_TITLE + tokenFilter(content) + FOOTER);
+
       try (FileWriter fw = new FileWriter(new File(DOCS_OUTPUT_DIR, filename))) {
-         fw.write(HEADER_BEFORE_TITLE);
-         fw.write(removeHtmlMarkup(title));
-         fw.write(HEADER_AFTER_TITLE);
-         fw.write(tokenFilter(content));
-         fw.write(FOOTER);
+         fw.write(html.trim());
       } catch (Exception e) {
          throw new RuntimeException(e);
       }
+   }
+
+   /** unsophisticated attempt at compacting html by removing unnecessary whitespace */
+   private static String compactHtml(String inputHtml) {
+      String output = inputHtml.replaceAll("\\s+", " ").trim();
+
+      output = output.replace(" <br>", "<br>").replace("<br> ", "<br>");
+
+      for (final String tag : new String[] {"body", "html", "head", "title", "meta", "p", "div", "ul", "ol", "li", "h3", "h2", "h1", "h4", "img", "center"}) {
+         output = output.replace(" <" + tag + " ", "<" + tag + " ");
+         output = output.replace("<" + tag + "> ", "<" + tag + ">");
+         output = output.replace(" <" + tag + ">", "<" + tag + ">");
+         output = output.replace("</" + tag + "> ", "</" + tag + ">");
+         output = output.replace(" </" + tag + ">", "</" + tag + ">");
+      }
+
+      if (output.contains("<pre") || output.contains("<script")) {
+         // this approach could alter the behaviour of <pre> and <script> tags, so throw an exception if the content contains them
+         throw new RuntimeException(inputHtml);
+      }
+
+      return output;
    }
 
    private static String tokenFilter(CharSequence content) {

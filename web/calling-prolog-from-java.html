@@ -80,46 +80,42 @@ public class ProjogExample {<br>
 Contents of <code>test.pl</code>:
 </p>
 
-<div class="code">
-<pre>
-test(a,1).
-test(b,2).
-test(c,3).
-test(d,4).
-test(e,5).
-test(f,6).
-test(g,7).
-test(h,8).
-test(i,9).
-
+<div class="code"><code>
+test(a,1).<br>
+test(b,2).<br>
+test(c,3).<br>
+test(d,4).<br>
+test(e,5).<br>
+test(f,6).<br>
+test(g,7).<br>
+test(h,8).<br>
+test(i,9).<br>
+<br>
 testRule(X) :- test(X, Y), Y mod 2 =:= 0.
-</pre>
-</div>
+</code></div>
 
 <p>
 Output of running <code>org.projog.example.ProjogExample</code>:
 </p>
 
-<div class="code">
-<pre>
-X = a Y = 1
+<div class="code"><code>
+X = a Y = 1<br>
+X = b Y = 2<br>
+X = c Y = 3<br>
+X = d Y = 4<br>
+X = e Y = 5<br>
+X = f Y = 6<br>
+X = g Y = 7<br>
+X = h Y = 8<br>
+X = i Y = 9<br>
+Y = 4<br>
+X = b<br>
+X = d<br>
+X = f<br>
+X = h<br>
+X = a Y = 1<br>
 X = b Y = 2
-X = c Y = 3
-X = d Y = 4
-X = e Y = 5
-X = f Y = 6
-X = g Y = 7
-X = h Y = 8
-X = i Y = 9
-Y = 4
-X = b
-X = d
-X = f
-X = h
-X = a Y = 1
-X = b Y = 2
-</pre>
-</div>
+</code></div>
 
 <h3>See Also</h3>
 <ul>

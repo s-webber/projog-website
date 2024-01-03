@@ -53,24 +53,24 @@ public class SingleResultPredicateExample extends AbstractSingleResultPredicate 
 Example of integrating <code>org.projog.example.SingleResultPredicateExample</code> into Projog:
 </p>
 
-<div class="code"><pre>
-?- pj_add_predicate(uppercase/2, 'org.projog.example.SingleResultPredicateExample').
-
-yes
-
-?- uppercase('The quick brown fox jumps over the lazy dog', X).
-X = THE QUICK BROWN FOX JUMPS OVER THE LAZY DOG
-
-yes
-
-?- uppercase('The quick brown fox jumps over the lazy dog', 'THE QUICK BROWN FOX JUMPS OVER THE LAZY DOG').
-
-yes
-
-?- uppercase('The quick brown fox jumps over the lazy dog', 'THE QUICK BROWN BOX JUMPS OVER THE LAZY FOG').
-
+<div class="code"><code>
+?- pj_add_predicate(uppercase/2, 'org.projog.example.SingleResultPredicateExample').<br>
+<br>
+yes<br>
+<br>
+?- uppercase('The quick brown fox jumps over the lazy dog', X).<br>
+X = THE QUICK BROWN FOX JUMPS OVER THE LAZY DOG<br>
+<br>
+yes<br>
+<br>
+?- uppercase('The quick brown fox jumps over the lazy dog', 'THE QUICK BROWN FOX JUMPS OVER THE LAZY DOG').<br>
+<br>
+yes<br>
+<br>
+?- uppercase('The quick brown fox jumps over the lazy dog', 'THE QUICK BROWN BOX JUMPS OVER THE LAZY FOG').<br>
+<br>
 no
-</pre></div>
+</code></div>
 
 <p>
 Contents of  <a href="https://github.com/s-webber/projog-examples/blob/master/calling-java-from-prolog/src/main/java/com/example/RetryablePredicateExample.java">
@@ -132,26 +132,26 @@ public class RetryablePredicateExample extends AbstractPredicateFactory {<br>
 Example of integrating <code>com.example.RetryablePredicateExample</code> into Projog:
 </p>
 
-<div class="code"><pre>
-?- pj_add_predicate(split/2, 'com.example.RetryablePredicateExample').
-
-yes
-
-?- split('dog,cat,bird', X).
-X = dog
-
-yes ;
-
-X = cat
-
-yes ;
-
-X = bird
-
-yes ;
-
+<div class="code"><code>
+?- pj_add_predicate(split/2, 'com.example.RetryablePredicateExample').<br>
+<br>
+yes<br>
+<br>
+?- split('dog,cat,bird', X).<br>
+X = dog<br>
+<br>
+yes ;<br>
+<br>
+X = cat<br>
+<br>
+yes ;<br>
+<br>
+X = bird<br>
+<br>
+yes ;<br>
+<br>
 no
-</pre></div>
+</code></div>
 
 <h3>See Also</h3>
 <ul>

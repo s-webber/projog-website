@@ -1,17 +1,19 @@
 # PageSpeed: Specify a character set (in HTTP headers)
 AddCharset UTF-8 .html
 
-<FilesMatch "\.(js|css|html)$">
-    Header append Vary: Accept-Encoding
+<FilesMatch "\.(html|css)$">
+Header append Vary: Accept-Encoding
 </FilesMatch>
 
 # 1 week 604800, 12 hours 43200, 2 hours 7200
-<FilesMatch "\.(js|gif|png|jpg|css)$">
-    Header set Cache-Control "max-age=7200, public"
+<FilesMatch "\.(html|css|png|ico)$">
+Header set Cache-Control "max-age=43200, public"
 </FilesMatch>
-<FilesMatch "\.(html)$">
-    Header set Cache-Control "max-age=7200, public"
-</FilesMatch>
+
+<IfModule mod_deflate.c>
+AddOutputFilterByType DEFLATE text/html
+AddOutputFilterByType DEFLATE text/css
+</IfModule> 
 
 ErrorDocument 400 http://www.projog.org/error.html
 ErrorDocument 401 http://www.projog.org/error.html
